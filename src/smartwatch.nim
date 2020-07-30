@@ -1,5 +1,8 @@
-# This is just an example to get you started. A typical binary package
-# uses this file as the main entry point of the application.
+# example.nim
+import
+  htmlgen,
+  jester
 
-when isMainModule:
-  echo "Greetings!"
+routes:
+  get "/":
+    resp h1("Hello world")
