@@ -13,7 +13,7 @@ from sequtils import
 
 const
   debug_build {.booldefine.}: bool = false
-  smart_opts = " -a --json=c "
+  smart_opts = " --all --json=c --device=sat,auto "
   lsblk = "/bin/lsblk "
   lsblk_opts = " -pilo KNAME "
 
@@ -42,31 +42,31 @@ proc getSmartData*(devices: seq[string]): bool =
     writeLine(stdout, dev)
     let
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
-      smart_data = raw_smart_data.parseJson
-      device_map = smart_data["device"].getFields
+      smart_data  = raw_smart_data.parseJson
+      device_map  = smart_data["device"].getFields
       device_type = device_map.getOrDefault("type")
       ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
-      asa_table = ata_smart_attributes["table"].getElems
-      asa_t_id1 = asa_table[0].getFields
-      asa_t_id3 = asa_table[1].getFields
-      asa_t_id4 = asa_table[2].getFields
-      asa_t_id5 = asa_table[3].getFields
-      asa_t_id7 = asa_table[4].getFields
-      asa_t_id9 = asa_table[5].getFields
-      asa_t_id10 = asa_table[6].getFields
-      asa_t_id12 = asa_table[7].getFields
-      asa_t_id184 = asa_table[8].getFields
-      asa_t_id187 = asa_table[9].getFields
-      asa_t_id188 = asa_table[10].getFields
-      asa_t_id189 = asa_table[11].getFields
-      asa_t_id190 = asa_table[12].getFields
-      asa_t_id191 = asa_table[13].getFields
-      asa_t_id193 = asa_table[14].getFields
-      asa_t_id194 = asa_table[15].getFields
-      asa_t_id195 = asa_table[16].getFields
-      asa_t_id197 = asa_table[17].getFields
-      asa_t_id198 = asa_table[18].getFields
-      asa_t_id199 = asa_table[19].getFields
+      asa_table   = ata_smart_attributes["table"].getElems
+      st_id1   = asa_table[0].getFields
+      st_id3   = asa_table[1].getFields
+      st_id4   = asa_table[2].getFields
+      st_id5   = asa_table[3].getFields
+      st_id7   = asa_table[4].getFields
+      st_id9   = asa_table[5].getFields
+      st_id10  = asa_table[6].getFields
+      st_id12  = asa_table[7].getFields
+      st_id184 = asa_table[8].getFields
+      st_id187 = asa_table[9].getFields
+      st_id188 = asa_table[10].getFields
+      st_id189 = asa_table[11].getFields
+      st_id190 = asa_table[12].getFields
+      st_id191 = asa_table[13].getFields
+      st_id193 = asa_table[14].getFields
+      st_id194 = asa_table[15].getFields
+      st_id195 = asa_table[16].getFields
+      st_id197 = asa_table[17].getFields
+      st_id198 = asa_table[18].getFields
+      st_id199 = asa_table[19].getFields
       # Possible fields per SMART ID:
       # id
       # name
@@ -77,6 +77,6 @@ proc getSmartData*(devices: seq[string]): bool =
       # flags (another JsonNode in itself)
       # raw (another JsonNode in itself)
     writeLine(stdout, device_type)
-    writeLine(stdout, asa_t_id1["name"])
+    writeLine(stdout, st_id1["name"])
 
 discard getSmartData(getAllDevices())
