@@ -1,7 +1,8 @@
 # example.nim
 import
   htmlgen,
-  jester
+  jester,
+  depman
 
 routes:
   get "/":
