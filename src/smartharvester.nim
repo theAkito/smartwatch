@@ -1,8 +1,7 @@
 import
   os,
   json,
-  tables,
-  depman
+  tables
 from osproc import
   execCmdEx
 from strutils import
@@ -11,15 +10,6 @@ from strutils import
 from sequtils import
   keepIf,
   delete
-# from tables import
-  # getOrDefault
-# from json import
-#   parseJson,
-#   getFields,
-#   getElems,
-#   JsonNode,
-#   JObject,
-#   JArray
 
 const
   debug_build {.booldefine.}: bool = false
