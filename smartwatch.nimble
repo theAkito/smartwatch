@@ -6,8 +6,8 @@ description   = "WebUI showing S.M.A.R.T. status of storage media on servers."
 license       = "GPL-3.0"
 srcDir        = "src"
 bin           = @["smartwatch"]
-skipDirs    = @["tasks"]
-skipFiles   = @["README.md"]
+skipDirs      = @["tasks"]
+skipFiles     = @["README.md"]
 
 
 # Dependencies
