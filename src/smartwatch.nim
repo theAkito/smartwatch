@@ -6,4 +6,4 @@ import
 
 routes:
   get "/":
-    resp h1("Hello world")
+    resp "Failure"
