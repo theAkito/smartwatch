@@ -8,6 +8,7 @@ srcDir        = "src"
 bin           = @["smartwatch"]
 skipDirs      = @["tasks"]
 skipFiles     = @["README.md"]
+skipExt       = @["nim"]
 
 
 # Dependencies

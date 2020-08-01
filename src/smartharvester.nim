@@ -1,7 +1,8 @@
 import
   os,
   json,
-  tables
+  tables,
+  depman
 from osproc import
   execCmdEx
 from strutils import
@@ -14,9 +15,11 @@ from sequtils import
   # getOrDefault
 # from json import
 #   parseJson,
-#   getStr,
-#   JsonNode
-
+#   getFields,
+#   getElems,
+#   JsonNode,
+#   JObject,
+#   JArray
 
 const
   debug_build {.booldefine.}: bool = false
@@ -73,7 +76,7 @@ proc getSmartData*(devices: seq[string]): bool =
       asa_t_id195 = asa_table[16].getFields
       asa_t_id197 = asa_table[17].getFields
       asa_t_id198 = asa_table[18].getFields
-      asa_t_id199 = asa_table[18].getFields
+      asa_t_id199 = asa_table[19].getFields
       # Possible fields per SMART ID:
       # id
       # name
