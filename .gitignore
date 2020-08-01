@@ -12,6 +12,11 @@
 *.code-workspace
 .history/
 
-# Binaries and Tests
+# ---> Nim
+nimcache/
+nimblecache/
+htmldocs/
+# Binaries and Temp Files
 smartwatch
 smartharvester
+fakesmartctl.sh
