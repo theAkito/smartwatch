@@ -10,6 +10,8 @@ from strutils import
 from sequtils import
   keepIf,
   delete
+include smarttypes
+
 
 const
   debug_build {.booldefine.}: bool = false
@@ -37,9 +39,8 @@ proc getAllDevices*(): seq =
   )
   return blockdevices
 
-proc getSmartData*(devices: seq[string]): bool =
+proc getSmartData*(devices: seq[string], property: SmartProperty): seq[string] =
   for dev in devices:
-    writeLine(stdout, dev)
     let
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
       smart_data  = raw_smart_data.parseJson
@@ -76,7 +77,51 @@ proc getSmartData*(devices: seq[string]): bool =
       # when_failed
       # flags (another JsonNode in itself)
       # raw (another JsonNode in itself)
-    writeLine(stdout, device_type)
-    writeLine(stdout, st_id1["name"])
-
-discard getSmartData(getAllDevices())
+    case property:
+      of RAW_READ_ERROR_RATE:
+        let smart_line = @[st_id1["name"].getStr,
+                           $st_id1["value"],
+                           $st_id1["worst"],
+                           $st_id1["thresh"]]
+        # echo $smart_line
+        return smart_line
+      of SPIN_UP_TIME:
+        return @["empty_string"]
+      of START_STOP_COUNT:
+        return @["empty_string"]
+      of REALLOCATED_SECTOR_CT:
+        return @["empty_string"]
+      of SEEK_ERROR_RATE:
+        return @["empty_string"]
+      of POWER_ON_HOURS:
+        return @["empty_string"]
+      of SPIN_RETRY_COUNT:
+        return @["empty_string"]
+      of POWER_CYCLE_COUNT:
+        return @["empty_string"]
+      of ENDTOEND_ERROR:
+        return @["empty_string"]
+      of REPORTED_UNCORRECT:
+        return @["empty_string"]
+      of COMMAND_TIMEOUT:
+        return @["empty_string"]
+      of HIGH_FLY_WRITES:
+        return @["empty_string"]
+      of AIRFLOW_TEMPERATURE_CEL:
+        return @["empty_string"]
+      of GSENSE_ERROR_RATE:
+        return @["empty_string"]
+      of POWEROFF_RETRACT_COUNT:
+        return @["empty_string"]
+      of LOAD_CYCLE_COUNT:
+        return @["empty_string"]
+      of TEMPERATURE_CELSIUS:
+        return @["empty_string"]
+      of HARDWARE_ECC_RECOVERED:
+        return @["empty_string"]
+      of CURRENT_PENDING_SECTOR:
+        return @["empty_string"]
+      of OFFLINE_UNCORRECTABLE:
+        return @["empty_string"]
+      of UDMA_CRC_ERROR_COUNT:
+        return @["empty_string"]
