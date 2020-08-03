@@ -10,8 +10,8 @@ from strutils import
 from sequtils import
   keepIf,
   delete
-include smarttypes
-
+include
+  smarttypes
 
 const
   debug_build {.booldefine.}: bool = false
@@ -62,12 +62,13 @@ proc getSmartData*(devices: seq[string], property: SmartProperty): seq[string] =
       st_id189 = asa_table[11].getFields
       st_id190 = asa_table[12].getFields
       st_id191 = asa_table[13].getFields
-      st_id193 = asa_table[14].getFields
-      st_id194 = asa_table[15].getFields
-      st_id195 = asa_table[16].getFields
-      st_id197 = asa_table[17].getFields
-      st_id198 = asa_table[18].getFields
-      st_id199 = asa_table[19].getFields
+      st_id192 = asa_table[14].getFields
+      st_id193 = asa_table[15].getFields
+      st_id194 = asa_table[16].getFields
+      st_id195 = asa_table[17].getFields
+      st_id197 = asa_table[18].getFields
+      st_id198 = asa_table[19].getFields
+      st_id199 = asa_table[20].getFields
       # Possible fields per SMART ID:
       # id
       # name
@@ -83,45 +84,124 @@ proc getSmartData*(devices: seq[string], property: SmartProperty): seq[string] =
                            $st_id1["value"],
                            $st_id1["worst"],
                            $st_id1["thresh"]]
-        # echo $smart_line
         return smart_line
       of SPIN_UP_TIME:
-        return @["empty_string"]
+        let smart_line = @[st_id3["name"].getStr,
+                           $st_id3["value"],
+                           $st_id3["worst"],
+                           $st_id3["thresh"]]
+        return smart_line
       of START_STOP_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id4["name"].getStr,
+                           $st_id4["value"],
+                           $st_id4["worst"],
+                           $st_id4["thresh"]]
+        return smart_line
       of REALLOCATED_SECTOR_CT:
-        return @["empty_string"]
+        let smart_line = @[st_id5["name"].getStr,
+                           $st_id5["value"],
+                           $st_id5["worst"],
+                           $st_id5["thresh"]]
+        return smart_line
       of SEEK_ERROR_RATE:
-        return @["empty_string"]
+        let smart_line = @[st_id7["name"].getStr,
+                           $st_id7["value"],
+                           $st_id7["worst"],
+                           $st_id7["thresh"]]
+        return smart_line
       of POWER_ON_HOURS:
-        return @["empty_string"]
+        let smart_line = @[st_id9["name"].getStr,
+                           $st_id9["value"],
+                           $st_id9["worst"],
+                           $st_id9["thresh"]]
+        return smart_line
       of SPIN_RETRY_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id10["name"].getStr,
+                           $st_id10["value"],
+                           $st_id10["worst"],
+                           $st_id10["thresh"]]
+        return smart_line
       of POWER_CYCLE_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id12["name"].getStr,
+                           $st_id12["value"],
+                           $st_id12["worst"],
+                           $st_id12["thresh"]]
+        return smart_line
       of ENDTOEND_ERROR:
-        return @["empty_string"]
+        let smart_line = @[st_id184["name"].getStr,
+                           $st_id184["value"],
+                           $st_id184["worst"],
+                           $st_id184["thresh"]]
+        return smart_line
       of REPORTED_UNCORRECT:
-        return @["empty_string"]
+        let smart_line = @[st_id187["name"].getStr,
+                           $st_id187["value"],
+                           $st_id187["worst"],
+                           $st_id187["thresh"]]
+        return smart_line
       of COMMAND_TIMEOUT:
-        return @["empty_string"]
+        let smart_line = @[st_id188["name"].getStr,
+                           $st_id188["value"],
+                           $st_id188["worst"],
+                           $st_id188["thresh"]]
+        return smart_line
       of HIGH_FLY_WRITES:
-        return @["empty_string"]
+        let smart_line = @[st_id189["name"].getStr,
+                           $st_id189["value"],
+                           $st_id189["worst"],
+                           $st_id189["thresh"]]
+        return smart_line
       of AIRFLOW_TEMPERATURE_CEL:
-        return @["empty_string"]
+        let smart_line = @[st_id190["name"].getStr,
+                           $st_id190["value"],
+                           $st_id190["worst"],
+                           $st_id190["thresh"]]
+        return smart_line
       of GSENSE_ERROR_RATE:
-        return @["empty_string"]
+        let smart_line = @[st_id191["name"].getStr,
+                           $st_id191["value"],
+                           $st_id191["worst"],
+                           $st_id191["thresh"]]
+        return smart_line
       of POWEROFF_RETRACT_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id192["name"].getStr,
+                           $st_id192["value"],
+                           $st_id192["worst"],
+                           $st_id192["thresh"]]
+        return smart_line
       of LOAD_CYCLE_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id193["name"].getStr,
+                           $st_id193["value"],
+                           $st_id193["worst"],
+                           $st_id193["thresh"]]
+        return smart_line
       of TEMPERATURE_CELSIUS:
-        return @["empty_string"]
+        let smart_line = @[st_id194["name"].getStr,
+                           $st_id194["value"],
+                           $st_id194["worst"],
+                           $st_id194["thresh"]]
+        return smart_line
       of HARDWARE_ECC_RECOVERED:
-        return @["empty_string"]
+        let smart_line = @[st_id195["name"].getStr,
+                           $st_id195["value"],
+                           $st_id195["worst"],
+                           $st_id195["thresh"]]
+        return smart_line
       of CURRENT_PENDING_SECTOR:
-        return @["empty_string"]
+        let smart_line = @[st_id197["name"].getStr,
+                           $st_id197["value"],
+                           $st_id197["worst"],
+                           $st_id197["thresh"]]
+        return smart_line
       of OFFLINE_UNCORRECTABLE:
-        return @["empty_string"]
+        let smart_line = @[st_id198["name"].getStr,
+                           $st_id198["value"],
+                           $st_id198["worst"],
+                           $st_id198["thresh"]]
+        return smart_line
       of UDMA_CRC_ERROR_COUNT:
-        return @["empty_string"]
+        let smart_line = @[st_id199["name"].getStr,
+                           $st_id199["value"],
+                           $st_id199["worst"],
+                           $st_id199["thresh"]]
+        return smart_line
