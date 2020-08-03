@@ -1,6 +1,6 @@
 import macros
 
-macro createSmartHtmlTable*(arg: varargs[untyped]): untyped =
+macro createSmartHtmlRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 4
   var name= arg[0]
   var value= arg[1]
