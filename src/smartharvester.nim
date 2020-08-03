@@ -30,7 +30,7 @@ else:
 var
   blockdevices: seq[string]
 
-proc getAllDevices*(): seq =
+proc getAllDevices*(): seq[string] =
   let (devices, _) = execCmdEx(lsblk & lsblk_opts)
   blockdevices = devices.splitLines
   blockdevices.delete(0)
@@ -41,12 +41,10 @@ proc getAllDevices*(): seq =
   return blockdevices
 
 proc hash*[A](x: seq[A]): Hash =
-  ## efficient hashing of arrays and sequences.
-  for it in items(x): result = result !& hash(it)
+  for it in x.items: result = result !& hash(it)
   result = !$result
-# var seqtable = initTable[seq[int], seq[int]]()
 
-proc getSmartData*(devices: seq[string], property: SmartProperty): OrderedTable[seq[string], seq[string]] =
+proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTable[seq[string], seq[string]] =
   for dev in devices:
     let
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
@@ -55,7 +53,7 @@ proc getSmartData*(devices: seq[string], property: SmartProperty): OrderedTable[
       device_type = device_map.getOrDefault("type")
       model_family  = smart_data["model_family"].getStr
       model_name  = smart_data["model_name"].getStr
-      serial_number  = smart_data["serial_number"].getInt
+      serial_number  = smart_data["serial_number"].getStr
       ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
       asa_table   = ata_smart_attributes["table"].getElems
       st_id1   = asa_table[0].getFields
@@ -88,14 +86,14 @@ proc getSmartData*(devices: seq[string], property: SmartProperty): OrderedTable[
       # when_failed
       # flags (another JsonNode in itself)
       # raw (another JsonNode in itself)
+      device_info = @[
+                        model_family,
+                        model_name,
+                        serial_number
+                     ]
     case property:
       of RAW_READ_ERROR_RATE:
         let
-          device_info = @[
-                            model_family,
-                            model_name,
-                            $serial_number
-                         ]
           smart_line  = @[
                             st_id1["name"].getStr,
                             $st_id1["value"],
@@ -110,127 +108,181 @@ proc getSmartData*(devices: seq[string], property: SmartProperty): OrderedTable[
                            $st_id3["value"],
                            $st_id3["worst"],
                            $st_id3["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of START_STOP_COUNT:
         let smart_line = @[st_id4["name"].getStr,
                            $st_id4["value"],
                            $st_id4["worst"],
                            $st_id4["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of REALLOCATED_SECTOR_CT:
         let smart_line = @[st_id5["name"].getStr,
                            $st_id5["value"],
                            $st_id5["worst"],
                            $st_id5["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of SEEK_ERROR_RATE:
         let smart_line = @[st_id7["name"].getStr,
                            $st_id7["value"],
                            $st_id7["worst"],
                            $st_id7["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of POWER_ON_HOURS:
         let smart_line = @[st_id9["name"].getStr,
                            $st_id9["value"],
                            $st_id9["worst"],
                            $st_id9["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of SPIN_RETRY_COUNT:
         let smart_line = @[st_id10["name"].getStr,
                            $st_id10["value"],
                            $st_id10["worst"],
                            $st_id10["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of POWER_CYCLE_COUNT:
         let smart_line = @[st_id12["name"].getStr,
                            $st_id12["value"],
                            $st_id12["worst"],
                            $st_id12["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of ENDTOEND_ERROR:
         let smart_line = @[st_id184["name"].getStr,
                            $st_id184["value"],
                            $st_id184["worst"],
                            $st_id184["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of REPORTED_UNCORRECT:
         let smart_line = @[st_id187["name"].getStr,
                            $st_id187["value"],
                            $st_id187["worst"],
                            $st_id187["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of COMMAND_TIMEOUT:
         let smart_line = @[st_id188["name"].getStr,
                            $st_id188["value"],
                            $st_id188["worst"],
                            $st_id188["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of HIGH_FLY_WRITES:
         let smart_line = @[st_id189["name"].getStr,
                            $st_id189["value"],
                            $st_id189["worst"],
                            $st_id189["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of AIRFLOW_TEMPERATURE_CEL:
         let smart_line = @[st_id190["name"].getStr,
                            $st_id190["value"],
                            $st_id190["worst"],
                            $st_id190["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of GSENSE_ERROR_RATE:
         let smart_line = @[st_id191["name"].getStr,
                            $st_id191["value"],
                            $st_id191["worst"],
                            $st_id191["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of POWEROFF_RETRACT_COUNT:
         let smart_line = @[st_id192["name"].getStr,
                            $st_id192["value"],
                            $st_id192["worst"],
                            $st_id192["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of LOAD_CYCLE_COUNT:
         let smart_line = @[st_id193["name"].getStr,
                            $st_id193["value"],
                            $st_id193["worst"],
                            $st_id193["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of TEMPERATURE_CELSIUS:
         let smart_line = @[st_id194["name"].getStr,
                            $st_id194["value"],
                            $st_id194["worst"],
                            $st_id194["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of HARDWARE_ECC_RECOVERED:
         let smart_line = @[st_id195["name"].getStr,
                            $st_id195["value"],
                            $st_id195["worst"],
                            $st_id195["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of CURRENT_PENDING_SECTOR:
         let smart_line = @[st_id197["name"].getStr,
                            $st_id197["value"],
                            $st_id197["worst"],
                            $st_id197["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of OFFLINE_UNCORRECTABLE:
         let smart_line = @[st_id198["name"].getStr,
                            $st_id198["value"],
                            $st_id198["worst"],
                            $st_id198["thresh"]]
-        # return smart_line
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
       of UDMA_CRC_ERROR_COUNT:
         let smart_line = @[st_id199["name"].getStr,
                            $st_id199["value"],
                            $st_id199["worst"],
                            $st_id199["thresh"]]
-        # return smart_line
-let smart_RAW_READ_ERROR_RATE = getSmartData(devices = getAllDevices(), property = RAW_READ_ERROR_RATE)
-var seqtable = initTable[seq[int], seq[int]]()
-var blah = @[1,2,3]
-var plah = @[4,5,6]
-# var output = tables.add(seqtable, blah, plah)
-seqtable[@[1,2,3]] = @[4,5,6]
-var output = seqtable.hasKey(blah)
-echo "Test seqtable outside of proc: " & $output
-echo "Test seqtable inside of proc: " & $smart_RAW_READ_ERROR_RATE
+        var seqtable = initOrderedTable[seq[string], seq[string]]()
+        seqtable[device_info] = smart_line
+        return seqtable
+
+proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[string]]] =
+  var
+    smart_all_perDevice: OrderedTable[seq[string], seq[seq[string]]] = initOrderedTable[seq[string], seq[seq[string]]]()
+    smart_line_perDevice: OrderedTable[seq[string], seq[string]] = initOrderedTable[seq[string], seq[string]]()
+    current_device: seq[string]
+    smart_all: seq[seq[string]]
+    device_info: seq[string]
+  for dev in devices:
+    current_device = @[dev]
+    smart_all = @[]
+    for smartType in SmartProperty.typeof:
+      smart_line_perDevice = getSmartDataField(current_device, smartType)
+      #TODO DEBUG
+      # echo "smart_line_perDevice output: " & $smart_line_perDevice
+      for key, value in smart_line_perDevice.pairs:
+        smart_all.add(value)
+        device_info = key
+    smart_all_perDevice[device_info] = smart_all
+  return smart_all_perDevice
+#TODO DEBUG
+# echo getSmartDataAll(getAllDevices())
+echo getSmartDataAll(@["/dev/sda", "/dev/sdb"])
