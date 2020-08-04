@@ -107,7 +107,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 1
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -118,7 +118,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 2
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -129,7 +129,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 3
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -140,7 +140,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 4
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -151,7 +151,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 5
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -162,7 +162,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 6
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -173,7 +173,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 7
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -184,7 +184,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 8
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -195,7 +195,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 9
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -206,7 +206,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 10
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -217,7 +217,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 11
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -228,7 +228,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 12
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -239,7 +239,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 13
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -250,7 +250,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 22
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -261,7 +261,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 170
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -272,7 +272,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 171
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -283,7 +283,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 172
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -294,7 +294,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 173
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -305,7 +305,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 174
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -316,7 +316,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 175
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -327,7 +327,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 176
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -338,7 +338,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 177
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -349,7 +349,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 179
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -360,7 +360,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 180
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -371,7 +371,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 181
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -382,7 +382,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 182
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -393,7 +393,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 183
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -404,7 +404,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 184
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -415,7 +415,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 185
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -426,7 +426,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 6
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -437,7 +437,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 187
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -448,7 +448,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 188
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -459,7 +459,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 189
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -470,7 +470,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 190
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -481,7 +481,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 191
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -492,7 +492,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 192
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -503,7 +503,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 193
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -514,7 +514,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 194
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -525,7 +525,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 195
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -536,7 +536,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 196
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -547,7 +547,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 197
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -558,7 +558,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 198
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -569,7 +569,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 199
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -580,7 +580,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 200
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -591,7 +591,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 201
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -602,7 +602,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 202
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -613,7 +613,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 203
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -624,7 +624,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 204
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -635,7 +635,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 205
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -646,7 +646,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 206
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -657,7 +657,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 207
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -668,7 +668,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 208
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -679,7 +679,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 209
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -690,7 +690,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 210
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -701,7 +701,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 211
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -712,7 +712,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 212
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -723,7 +723,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 220
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -734,7 +734,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 221
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -745,7 +745,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 222
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -756,7 +756,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 223
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -767,7 +767,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 224
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -778,7 +778,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 225
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -789,7 +789,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 226
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -800,7 +800,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 227
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -811,7 +811,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 228
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -822,7 +822,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 230
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -833,7 +833,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 231
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -844,7 +844,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 232
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -855,7 +855,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 233
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -866,7 +866,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 234
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -877,7 +877,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 235
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -888,7 +888,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 240
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -899,7 +899,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 241
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -910,7 +910,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 242
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -921,7 +921,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 243
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -932,7 +932,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 244
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -943,7 +943,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 249
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -954,7 +954,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 250
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -965,7 +965,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 251
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -976,7 +976,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 252
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
@@ -987,7 +987,7 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             current_id = 254
             node_table = smart_attr_node(current_id)
           if not node_table.hasKey("id") or
-             node_table["id"].getInt != current_id:
+                 node_table["id"].getInt != current_id:
             break this_attr
           var seqtable = initOrderedTable[seq[string], seq[string]]()
           seqtable[device_info] = get_final_smart_attr(node_table)
