@@ -1,6 +1,6 @@
 # example.nim
 import
-  smartharvester,
+  smartharvest,
   htmlgen,
   jester,
   tablegenerator
