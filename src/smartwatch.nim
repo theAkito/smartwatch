@@ -6,23 +6,22 @@ import
   tablegenerator
 include
   depman
-  # smarttypes
 
 routes:
   get "/dashboard":
     redirect "/"
   get "/":
     let
-      smart_all: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda", "/dev/sdb"])
-      # smart_one = smart_all[]
-    var
-      val: seq[seq[string]]
-      attr1: seq[string]
-      title1: seq[string]
-    for key, value in smart_all:
-      val = smart_all[key]
-      attr1 = val[0]
-      title1 = key
+      smart_all1: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda"])
+      smart_all2: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sdb"])
+    proc createHtmlTable(smart_data: OrderedTable[seq[string], seq[seq[string]]]): string =
+      var
+        attr_list: seq[seq[string]]
+      for device_info, smart_attrs in smart_data:
+        attr_list = smart_data[device_info]
+        result.add createSmartHtmlTableTitleRow(device_info[0], device_info[1], device_info[2])
+        for attr in attr_list:
+          result.add createSmartHtmlTableRow(attr[0], attr[1], attr[2], attr[3])
     resp """<!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="css/styles.css">
@@ -44,8 +43,10 @@ routes:
 </nav>""" &
       br() &
       """<table style="width:350px">""" &
-      createSmartHtmlTableTitleRow($title1[0], $title1[1], $title1[2]) &
-      createSmartHtmlTableRow($attr1[0], $attr1[1], $attr1[2], $attr1[3]) &
+      createHtmlTable(smart_all1) &
+      """</table>""" &
+      """<table style="width:350px">""" &
+      createHtmlTable(smart_all2) &
       """</table>"""
   get "/test":
     resp "Test succeeded!"

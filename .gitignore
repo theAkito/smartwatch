@@ -21,3 +21,4 @@ smartwatch
 smartharvester
 fakesmartctl.sh
 src/public/
+*_[0-9][0-9][0-9][0-9][0-9].nims

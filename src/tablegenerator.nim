@@ -13,6 +13,7 @@ macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
     th(`worst`) &
     th(`thresh`) &
     "</tr>"
+
 macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 3
   var name= arg[0]

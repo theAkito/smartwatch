@@ -1,5 +1,4 @@
 import
-  os,
   json,
   tables,
   hashes
@@ -57,9 +56,9 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
   # flags (another JsonNode in itself)
   # raw (another JsonNode in itself)
   for dev in devices:
-    # var (raw_smart_data, err_code) = execCmdEx("bash -c \"/usr/bin/fakesmartctl " & dev &  " \" ")
+    var (raw_smart_data, err_code) = execCmdEx("bash -c \"/usr/bin/fakesmartctl " & dev &  " \" ")
     let
-      (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
+      # (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
       smart_data  = raw_smart_data.parseJson
       device_map  = smart_data["device"].getFields
       device_type = device_map.getOrDefault("type")

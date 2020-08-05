@@ -28,6 +28,8 @@ task configure, "Configure project.":
   exec "git submodule update --recursive --remote"
 task build, "Build project.":
   setCommand "c"
+task dbuild, "Debug Build project.":
+  exec "nim c --run --define:debug_build=true --out:src/smartwatch --debuginfo:on src/smartwatch"
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim utils/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":
