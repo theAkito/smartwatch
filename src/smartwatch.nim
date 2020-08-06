@@ -2,11 +2,18 @@ import
   smartharvest,
   htmlgen,
   jester,
-  tablegenerator
+  tablegenerator,
+  parseopt
+from os import
+  paramStr,
+  commandLineParams,
+  getCurrentDir
+from strutils import
+  parseInt
 include
   depman
 
-routes:
+router mainRouter:
   get "/dashboard":
     redirect "/"
   get "/":
@@ -37,3 +44,28 @@ routes:
     resp "This response will be a JSON!"
   get "/test":
     resp "Test succeeded!"
+
+proc run() =
+  let
+    params = commandLineParams()
+  var
+    port: Port
+    dir: string
+  for kind, key, val in params.getopt():
+    case kind
+      of cmdArgument:
+        discard
+      of cmdLongOption, cmdShortOption:
+        case key:
+          of "port", "p": port = val.parseInt().Port
+          of "directory", "dir", "d": dir = val
+      of cmdEnd: assert(false)
+  if port.int == 0: port = 50232.Port
+  if dir == "": dir = getCurrentDir() & "/" & "public"
+  let
+    settings = newSettings(port = port, staticDir = dir)
+  var jester = initJester(mainRouter, settings = settings)
+  jester.serve()
+
+when isMainModule:
+  run()
