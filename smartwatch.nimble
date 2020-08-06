@@ -26,11 +26,14 @@ task configure, "Configure project.":
   exec "git checkout master"
   exec "git submodule update --init --recursive"
   exec "git submodule update --recursive --remote"
-task build, "Build project.":
-  setCommand "c"
+task fbuild, "Build project.":
+  exec "nimble makecfg"
+  exec "nim c src/smartwatch"
+  exec "nimble clean"
 task dbuild, "Debug Build project.":
-  exec "nim c --run --define:debug_build=true --out:src/smartwatch --debuginfo:on src/smartwatch"
+  exec "nim c --run --define:debug_build=true --out:smartwatch --debuginfo:on src/smartwatch"
 task makecfg, "Create nim.cfg for optimized builds.":
-  exec "nim utils/cfg_optimized.nims"
+  exec "nim tasks/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":
-  exec "nim utils/cfg_clean.nims"
+  exec "nim tasks/cfg_clean.nims"
+#TODO Create better and working "doc" task.
