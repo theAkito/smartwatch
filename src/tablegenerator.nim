@@ -43,13 +43,6 @@ proc createHtmlTableContent*(smart_data: OrderedTable[seq[string], seq[seq[strin
       result.add createSmartHtmlTableRow(attr[0], attr[1], attr[2], attr[3])
     result.add """</table>"""
 
-macro createSmartHtmlTable*(arg: varargs[untyped]): untyped =
-  arg.expectLen 1
+macro createSmartHtmlTable*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): untyped =
   result = quote do:
-    """<table style="width:350px">""" &
-    createHtmlTableContent(`arg`) &
-    """</table>"""
-
-proc createHtmlTableList*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): string =
-  for device_info, smart_attrs in smart_data:
-    result =  createSmartHtmlTable(smart_data)
+    createHtmlTableContent(`smart_data`)

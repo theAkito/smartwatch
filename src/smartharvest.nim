@@ -12,7 +12,9 @@ from sequtils import
   filter,
   delete
 include
-  smarttypes
+  smarttypes,
+  smartprocessor,
+  oscom
 
 const
   debug_build {.booldefine.}: bool = false
@@ -26,13 +28,17 @@ when debug_build == true:
 else:
   const
     smart = "/usr/sbin/smartctl "
-    smart_opts = " --all --json=c --device=sat,auto "
-
-var
-  blockdevices: seq[string]
+    smart_opts = " --all --json=c "
 
 proc getAllDevices*(): seq[string] =
-  let (devices, _) = execCmdEx(lsblk & lsblk_opts)
+  var
+    blockdevices: seq[string]
+  let (devices, err_code) = execCmdEx(lsblk & lsblk_opts)
+  case err_code:
+    of not 0:
+      raise OS_PROCESS_ERROR.newException("lsblk failed to execute!")
+    else:
+      discard
   blockdevices = devices.splitLines
   blockdevices.delete(0)
   blockdevices.keepIf(
@@ -41,7 +47,7 @@ proc getAllDevices*(): seq[string] =
   )
   return blockdevices
 
-proc hash*[A](x: seq[A]): Hash =
+func hash*[A](x: seq[A]): Hash =
   for it in x.items: result = result !& hash(it)
   result = !$result
 
@@ -56,12 +62,10 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
   # flags (another JsonNode in itself)
   # raw (another JsonNode in itself)
   for dev in devices:
-    var (raw_smart_data, err_code) = execCmdEx("bash -c \"/usr/bin/fakesmartctl " & dev &  " \" ")
-    let
-      # (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
+    var
+      (raw_smart_data, err_code) = execCmdEx("""bash -c "/usr/bin/fakesmartctl """ & dev &  """ " """)
+      # var (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
       smart_data  = raw_smart_data.parseJson
-      device_map  = smart_data["device"].getFields
-      device_type = device_map.getOrDefault("type")
       model_family  = smart_data["model_family"].getStr
       model_name  = smart_data["model_name"].getStr
       serial_number  = smart_data["serial_number"].getStr
@@ -72,15 +76,27 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
                         model_name,
                         serial_number
                      ]
-    var
-      current_smart_elem: OrderedTable[string, JsonNode]
-      avail_smart_elems: seq[int]
-    for elem in asa_table:
-      current_smart_elem = elem.getFields
-      avail_smart_elems.add(current_smart_elem["id"].getInt)
+    let
+      device_map  = smart_data["device"].getFields
+      device_type = device_map.getOrDefault("type")
+    case err_code:
+      of not 0:
+        (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & device_type.getStr & dev)
+        smart_data  = raw_smart_data.parseJson
+        serial_number  = smart_data["serial_number"].getStr
+        ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
+        asa_table   = ata_smart_attributes["table"].getElems
+      else:
+        discard
     proc smart_attr_node(id: int): OrderedTable[string, JsonNode] =
       var
+        current_smart_elem: OrderedTable[string, JsonNode]
+        avail_smart_elems: seq[int]
         node_table: OrderedTable[string, JsonNode]
+      for elem in asa_table:
+        current_smart_elem = elem.getFields
+        ## `avail_smart_elems` = Collection of all harvested SMART IDs.
+        avail_smart_elems.add(current_smart_elem["id"].getInt)
       if avail_smart_elems.contains(id):
         for node in asa_table:
           node_table = node.getFields
@@ -88,8 +104,6 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
             return node_table
           else:
             continue
-        if node_table["id"].getInt != id:
-          node_table["id"] = 9999.newJInt
     proc get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
       let
         smart_line  = @[
@@ -97,900 +111,171 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
                           $node_table["value"],
                           $node_table["worst"],
                           $node_table["thresh"]
-                      ]
+                        ]
       return smart_line
     case property:
       of RAW_READ_ERROR_RATE:
-        block this_attr:
-          let
-            current_id = 1
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        1.getOrDismissAttr
       of THROUGHPUT_PERFORMANCE:
-        block this_attr:
-          let
-            current_id = 2
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        2.getOrDismissAttr
       of SPIN_UP_TIME:
-        block this_attr:
-          let
-            current_id = 3
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        3.getOrDismissAttr
       of START_STOP_COUNT:
-        block this_attr:
-          let
-            current_id = 4
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        4.getOrDismissAttr
       of REALLOCATED_SECTORS_COUNT:
-        block this_attr:
-          let
-            current_id = 5
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        5.getOrDismissAttr
       of READ_CHANNEL_MARGIN:
-        block this_attr:
-          let
-            current_id = 6
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        6.getOrDismissAttr
       of SEEK_ERROR_RATE:
-        block this_attr:
-          let
-            current_id = 7
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        7.getOrDismissAttr
       of SEEK_TIME_PERFORMANCE:
-        block this_attr:
-          let
-            current_id = 8
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        8.getOrDismissAttr
       of POWER_ON_HOURS:
-        block this_attr:
-          let
-            current_id = 9
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        9.getOrDismissAttr
       of SPIN_RETRY_COUNT:
-        block this_attr:
-          let
-            current_id = 10
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        10.getOrDismissAttr
       of CALIBRATION_RETRY_COUNT:
-        block this_attr:
-          let
-            current_id = 11
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        11.getOrDismissAttr
       of POWER_CYCLE_COUNT:
-        block this_attr:
-          let
-            current_id = 12
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        12.getOrDismissAttr
       of SOFT_READ_ERROR_RATE:
-        block this_attr:
-          let
-            current_id = 13
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        13.getOrDismissAttr
       of CURRENT_HELIUM_LEVEL:
-        block this_attr:
-          let
-            current_id = 22
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        22.getOrDismissAttr
       of AVAILABLE_RESERVED_SPACE:
-        block this_attr:
-          let
-            current_id = 170
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        170.getOrDismissAttr
       of SSD_PROGRAM_FAIL_COUNT:
-        block this_attr:
-          let
-            current_id = 171
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        171.getOrDismissAttr
       of SSD_ERASE_FAIL_COUNT:
-        block this_attr:
-          let
-            current_id = 172
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        172.getOrDismissAttr
       of SSD_WEAR_LEVELING_COUNT:
-        block this_attr:
-          let
-            current_id = 173
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        173.getOrDismissAttr
       of UNEXPECTED_POWER_LOSS_COUNT:
-        block this_attr:
-          let
-            current_id = 174
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        174.getOrDismissAttr
       of POWER_LOSS_PROTECTION_FAILURE:
-        block this_attr:
-          let
-            current_id = 175
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        175.getOrDismissAttr
       of ERASE_FAIL_COUNT:
-        block this_attr:
-          let
-            current_id = 176
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        176.getOrDismissAttr
       of WEAR_RANGE_DELTA:
-        block this_attr:
-          let
-            current_id = 177
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        177.getOrDismissAttr
       of USED_RESERVED_BLOCK_COUNT_TOTAL:
-        block this_attr:
-          let
-            current_id = 179
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        179.getOrDismissAttr
       of UNUSED_RESERVED_BLOCK_COUNT_TOTAL:
-        block this_attr:
-          let
-            current_id = 180
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        180.getOrDismissAttr
       of PROGRAM_FAIL_COUNT_TOTAL:
-        block this_attr:
-          let
-            current_id = 181
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        181.getOrDismissAttr
       of ERASE_FAIL_COUNT_SAMSUNG:
-        block this_attr:
-          let
-            current_id = 182
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        182.getOrDismissAttr
       of SATA_DOWNSHIFT_ERROR_COUNT:
-        block this_attr:
-          let
-            current_id = 183
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        183.getOrDismissAttr
       of ENDTOEND_ERROR_IOEDC:
-        block this_attr:
-          let
-            current_id = 184
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        184.getOrDismissAttr
       of HEAD_STABILITY:
-        block this_attr:
-          let
-            current_id = 185
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        185.getOrDismissAttr
       of INDUCED_OPVIBRATION_DETECTION:
-        block this_attr:
-          let
-            current_id = 6
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        186.getOrDismissAttr
       of REPORTED_UNCORRECTABLE_ERRORS:
-        block this_attr:
-          let
-            current_id = 187
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        187.getOrDismissAttr
       of COMMAND_TIMEOUT:
-        block this_attr:
-          let
-            current_id = 188
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        188.getOrDismissAttr
       of HIGH_FLY_WRITES:
-        block this_attr:
-          let
-            current_id = 189
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        189.getOrDismissAttr
       of AIRFLOW_TEMPERATURE:
-        block this_attr:
-          let
-            current_id = 190
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        190.getOrDismissAttr
       of GSENSE_ERROR_RATE:
-        block this_attr:
-          let
-            current_id = 191
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        191.getOrDismissAttr
       of UNSAFE_SHUTDOWN_COUNT:
-        block this_attr:
-          let
-            current_id = 192
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        192.getOrDismissAttr
       of LOAD_CYCLE_COUNT:
-        block this_attr:
-          let
-            current_id = 193
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        193.getOrDismissAttr
       of TEMPERATURE_CELSIUS:
-        block this_attr:
-          let
-            current_id = 194
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        194.getOrDismissAttr
       of HARDWARE_ECC_RECOVERED:
-        block this_attr:
-          let
-            current_id = 195
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        195.getOrDismissAttr
       of REALLOCATION_EVENT_COUNT:
-        block this_attr:
-          let
-            current_id = 196
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        196.getOrDismissAttr
       of CURRENT_PENDING_SECTOR_COUNT:
-        block this_attr:
-          let
-            current_id = 197
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        197.getOrDismissAttr
       of OFFLINE_UNCORRECTABLE_SECTOR_COUNT:
-        block this_attr:
-          let
-            current_id = 198
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        198.getOrDismissAttr
       of ULTRADMA_CRC_ERROR_COUNT:
-        block this_attr:
-          let
-            current_id = 199
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        199.getOrDismissAttr
       of MULTIZONE_ERROR_RATE:
-        block this_attr:
-          let
-            current_id = 200
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        200.getOrDismissAttr
       of SOFT_READ_ERROR_RATE_2:
-        block this_attr:
-          let
-            current_id = 201
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        201.getOrDismissAttr
       of DATA_ADDRESS_MARK_ERRORS:
-        block this_attr:
-          let
-            current_id = 202
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        202.getOrDismissAttr
       of RUN_OUT_CANCEL:
-        block this_attr:
-          let
-            current_id = 203
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        203.getOrDismissAttr
       of SOFT_ECC_CORRECTION:
-        block this_attr:
-          let
-            current_id = 204
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        204.getOrDismissAttr
       of THERMAL_ASPERITY_RATE:
-        block this_attr:
-          let
-            current_id = 205
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        205.getOrDismissAttr
       of FLYING_HEIGHT:
-        block this_attr:
-          let
-            current_id = 206
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        206.getOrDismissAttr
       of SPIN_HIGH_CURRENT:
-        block this_attr:
-          let
-            current_id = 207
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        207.getOrDismissAttr
       of SPIN_BUZZ:
-        block this_attr:
-          let
-            current_id = 208
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        208.getOrDismissAttr
       of OFFLINE_SEEK_PERFORMANCE:
-        block this_attr:
-          let
-            current_id = 209
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        209.getOrDismissAttr
       of VIBRATION_DURING_WRITE_MAXTOR:
-        block this_attr:
-          let
-            current_id = 210
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        210.getOrDismissAttr
       of VIBRATION_DURING_WRITE:
-        block this_attr:
-          let
-            current_id = 211
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        211.getOrDismissAttr
       of SHOCK_DURING_WRITE:
-        block this_attr:
-          let
-            current_id = 212
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        212.getOrDismissAttr
       of DISK_SHIFT:
-        block this_attr:
-          let
-            current_id = 220
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        220.getOrDismissAttr
       of GSENSE_ERROR_RATE_2:
-        block this_attr:
-          let
-            current_id = 221
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        221.getOrDismissAttr
       of LOADED_HOURS:
-        block this_attr:
-          let
-            current_id = 222
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        222.getOrDismissAttr
       of LOAD_UNLOAD_RETRY_COUNT:
-        block this_attr:
-          let
-            current_id = 223
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        223.getOrDismissAttr
       of LOAD_FRICTION:
-        block this_attr:
-          let
-            current_id = 224
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        224.getOrDismissAttr
       of LOAD_UNLOAD_CYCLE_COUNT:
-        block this_attr:
-          let
-            current_id = 225
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        225.getOrDismissAttr
       of LOAD_IN_TIME:
-        block this_attr:
-          let
-            current_id = 226
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        226.getOrDismissAttr
       of TORQUE_AMPLIFICATION_COUNT:
-        block this_attr:
-          let
-            current_id = 227
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        227.getOrDismissAttr
       of POWEROFF_RETRACT_CYCLE:
-        block this_attr:
-          let
-            current_id = 228
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        228.getOrDismissAttr
       of GMR_OR_DRIVE_LIFE:
-        block this_attr:
-          let
-            current_id = 230
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        230.getOrDismissAttr
       of LIFE_LEFT:
-        block this_attr:
-          let
-            current_id = 231
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        231.getOrDismissAttr
       of ENDURANCE_REMAINING:
-        block this_attr:
-          let
-            current_id = 232
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        232.getOrDismissAttr
       of MEDIA_WEAROUT_INDICATOR:
-        block this_attr:
-          let
-            current_id = 233
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        233.getOrDismissAttr
       of MAXIMUM_ERASE_COUNT:
-        block this_attr:
-          let
-            current_id = 234
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        234.getOrDismissAttr
       of GOOD_BLOCK_COUNT:
-        block this_attr:
-          let
-            current_id = 235
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        235.getOrDismissAttr
       of HEAD_FLYING_HOURS:
-        block this_attr:
-          let
-            current_id = 240
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        240.getOrDismissAttr
       of TOTAL_LBAS_WRITTEN:
-        block this_attr:
-          let
-            current_id = 241
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        241.getOrDismissAttr
       of TOTAL_LBAS_READ:
-        block this_attr:
-          let
-            current_id = 242
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        242.getOrDismissAttr
       of TOTAL_LBAS_WRITTEN_EXPANDED:
-        block this_attr:
-          let
-            current_id = 243
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        243.getOrDismissAttr
       of TOTAL_LBAS_READ_EXPANDED:
-        block this_attr:
-          let
-            current_id = 244
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        244.getOrDismissAttr
       of NAND_WRITES_1GIB:
-        block this_attr:
-          let
-            current_id = 249
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        249.getOrDismissAttr
       of READ_ERROR_RETRY_RATE:
-        block this_attr:
-          let
-            current_id = 250
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        250.getOrDismissAttr
       of MINIMUM_SPARES_REMAINING:
-        block this_attr:
-          let
-            current_id = 251
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        251.getOrDismissAttr
       of NEWLY_ADDED_BAD_FLASH_BLOCK:
-        block this_attr:
-          let
-            current_id = 252
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        252.getOrDismissAttr
       of FREE_FALL_PROTECTION:
-        block this_attr:
-          let
-            current_id = 254
-            node_table = smart_attr_node(current_id)
-          if not node_table.hasKey("id") or
-                 node_table["id"].getInt != current_id:
-            break this_attr
-          var seqtable = initOrderedTable[seq[string], seq[string]]()
-          seqtable[device_info] = get_final_smart_attr(node_table)
-          return seqtable
+        254.getOrDismissAttr
 proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[string]]] =
   var
     smart_all_perDevice: OrderedTable[seq[string], seq[seq[string]]] = initOrderedTable[seq[string], seq[seq[string]]]()
@@ -1003,16 +288,8 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     smart_all = @[]
     for smartType in SmartProperty.typeof:
       smart_line_perDevice = getSmartDataField(current_device, smartType)
-      #TODO DEBUG
-      # echo "smart_line_perDevice output: " & $smart_line_perDevice
       for key, value in smart_line_perDevice.pairs:
         smart_all.add(value)
         device_info = key
-        #TODO DEBUG
-        # echo device_info
     smart_all_perDevice[device_info] = smart_all
   return smart_all_perDevice
-#TODO DEBUG
-# echo getSmartDataAll(getAllDevices())
-# echo getSmartDataAll(@["/dev/sda", "/dev/sdb"])
-# echo getSmartDataAll(@["/dev/sdb"])

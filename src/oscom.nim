@@ -1,0 +1,1 @@
+type OS_PROCESS_ERROR* = object of OSError

@@ -12,8 +12,6 @@ routes:
   get "/":
     let
       smart_all: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda", "/dev/sdb"])
-      smart_all1: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda"])
-      smart_all2: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sdb"])
     resp """<!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="css/styles.css">
@@ -33,7 +31,9 @@ routes:
     <!--<li><a href='/test'>Test</a></li>-->
   </ul>
 </nav>""" &
-      createHtmlTableList(smart_all) &
+      createSmartHtmlTable(smart_all) &
       br()
+  get "/json":
+    resp "This response will be a JSON!"
   get "/test":
     resp "Test succeeded!"
