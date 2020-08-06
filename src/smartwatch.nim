@@ -21,7 +21,7 @@ router mainRouter:
       smart_all: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda", "/dev/sdb"])
     resp """<!DOCTYPE html>
 <head>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <header>
   <a href='/'>Logo</a>

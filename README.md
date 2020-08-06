@@ -9,6 +9,12 @@ There are many monitoring tools with WebUIs out there, but they are bloated and 
 So I decided to create my own tool with a WebUI that shows precisely what I need. Nothing less, nothing more.
 
 ## How
+Get the project and prepare it:
+```
+git clone https://github.com/theAkito/smartwatch.git
+cd smartwatch
+nimble configure
+```
 To build the project use one of the predefined tasks:
 ```
 nimble fbuild
