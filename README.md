@@ -27,7 +27,7 @@ for the debug/development build.
 
 Run the server like this:
 ```
-./smartwatch --port=50232 --dir=./public
+./smartwatch --port=50232 --dir=./smartwatchstatic
 ```
 The arguments' values above are implicitly used, when running the server without arguments.
 

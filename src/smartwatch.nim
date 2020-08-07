@@ -60,7 +60,7 @@ router mainRouter:
 
 proc areSmartctlPermissionsGiven(): bool =
   let
-    (raw_smart_output, _) = execCmdEx("smartctl --scan-open --json=c")
+    (raw_smart_output, _) = execCmdEx("/usr/sbin/smartctl --scan-open --json=c")
     smart_output = raw_smart_output.parseJson
     smart_devices = smart_output.getFields.getOrDefault("devices").getElems
   for dev in smart_devices:
@@ -89,7 +89,7 @@ proc run() =
           of "directory", "dir", "d": dir = val
       of cmdEnd: assert(false)
   if port.int == 0: port = 50232.Port
-  if dir == "": dir = getCurrentDir() & "/" & "public"
+  if dir == "": dir = getCurrentDir() & "/" & "smartwatchstatic"
   let
     settings = newSettings(port = port, staticDir = dir)
   var jester = initJester(mainRouter, settings = settings)
