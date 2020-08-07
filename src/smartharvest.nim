@@ -17,18 +17,11 @@ include
   oscom
 
 const
-  debug_build {.booldefine.}: bool = false
+  debug_build {.booldefine.} = false
+  smart = "/usr/sbin/smartctl "
+  smart_opts = " --all --json=c "
   lsblk = "/bin/lsblk "
   lsblk_opts = " -pilo KNAME "
-
-when debug_build == true:
-  const
-    smart = "bash -c /usr/bin/fakesmartctl "
-    smart_opts = " "
-else:
-  const
-    smart = "/usr/sbin/smartctl "
-    smart_opts = " --all --json=c "
 
 proc checkProcessExitCode(errc: int): bool =
   case errc:
@@ -240,10 +233,11 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
         252.getOrDismissAttr
       of FREE_FALL_PROTECTION:
         254.getOrDismissAttr
+
 proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[string]]] =
   var
-    smart_all_perDevice: OrderedTable[seq[string], seq[seq[string]]] = initOrderedTable[seq[string], seq[seq[string]]]()
-    smart_line_perDevice: OrderedTable[seq[string], seq[string]] = initOrderedTable[seq[string], seq[string]]()
+    smart_all_perDevice  = initOrderedTable[seq[string], seq[seq[string]]]()
+    smart_line_perDevice = initOrderedTable[seq[string], seq[string]]()
     current_device: seq[string]
     smart_all: seq[seq[string]]
     device_info: seq[string]
