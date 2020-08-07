@@ -7,11 +7,24 @@ import
 from os import
   paramStr,
   commandLineParams,
-  getCurrentDir
+  getCurrentDir,
+  getEnv
+from osproc import 
+  execCmdEx
 from strutils import
-  parseInt
+  parseInt,
+  contains
+from json import 
+  parseJson,
+  getFields,
+  getElems,
+  getStr,
+  hasKey
+from tables import 
+  hasKey
 include
-  depman
+  depman,
+  debug
 
 router mainRouter:
   get "/dashboard":
@@ -45,7 +58,22 @@ router mainRouter:
   get "/test":
     resp "Test succeeded!"
 
+proc areSmartctlPermissionsGiven(): bool =
+  let
+    (raw_smart_output, _) = execCmdEx("smartctl --scan-open --json=c")
+    smart_output = raw_smart_output.parseJson
+    smart_devices = smart_output.getFields.getOrDefault("devices").getElems
+  for dev in smart_devices:
+    let smart_device_info = dev.getFields
+    if smart_device_info.hasKey("open_error") and
+       smart_device_info["open_error"].getStr.contains("Permission denied"):
+      return false
+  return true
+
 proc run() =
+  if debug_build == false:
+    if not areSmartctlPermissionsGiven():
+      raise OS_PERMISSION_ERROR.newException("Please run me as the `root` user.")
   let
     params = commandLineParams()
   var

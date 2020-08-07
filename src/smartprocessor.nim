@@ -1,5 +1,9 @@
 template getOrDismissAttr*(id: int) =
   block this_attr:
+    if asa_table == @[]:
+      # Failed to acquire SMART attributes
+      # because failed to read device.
+      break this_attr
     let
       current_id = id
       node_table = smart_attr_node(current_id)
@@ -21,21 +25,36 @@ template dataHarvester*() =
   # flags (another JsonNode in itself)
   # raw (another JsonNode in itself)
   proc harvestRawData(dev: string, dev_type: string) =
-    (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & dev_type & dev)
+    (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & dev_type & " " & dev)
   proc harvestRawData(dev: string, debug: bool = false) =
     if debug:
       (raw_smart_data, err_code) = execCmdEx("""bash -c "/usr/bin/fakesmartctl """ & dev &  """ " """)
     else:
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
-  proc harvestSmartData(dev: string, explicit: bool = false) =
+  proc harvestSmartData(dev: string, explicit: bool = false)
+                       {.raises: [
+                                  OS_PROCESS_ERROR,
+                                  Defect,
+                                  IOError,
+                                  OSError,
+                                  ValueError,
+                                  Exception
+                                 ].} =
     if explicit and not checkProcessExitCode(err_code):
-      raise OS_PROCESS_ERROR.newException("Cannot determine device type of " & model_name)
+      raise OS_PROCESS_ERROR.newException("Cannot get SMART information from " & model_name)
     smart_data  = raw_smart_data.parseJson
-    model_family  = smart_data["model_family"].getStr
-    model_name  = smart_data["model_name"].getStr
-    serial_number  = smart_data["serial_number"].getStr
-    ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
-    asa_table   = ata_smart_attributes["table"].getElems
+    if smart_data.hasKey("model_family"):
+      model_family = smart_data["model_family"].getStr
+    else:
+      model_family = ""
+    if smart_data.hasKey("serial_number"):
+      serial_number = smart_data["serial_number"].getStr
+    else:
+      serial_number = ""
+    if smart_data.hasKey("ata_smart_attributes"):
+      ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
+      asa_table = ata_smart_attributes["table"].getElems
+    model_name = smart_data["model_name"].getStr
     device_info = @[
                       model_family,
                       model_name,

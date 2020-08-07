@@ -14,10 +14,10 @@ from sequtils import
 include
   smarttypes,
   smartprocessor,
-  oscom
+  oscom,
+  debug
 
 const
-  debug_build {.booldefine.} = false
   smart = "/usr/sbin/smartctl "
   smart_opts = " --all --json=c "
   lsblk = "/bin/lsblk "
@@ -25,12 +25,10 @@ const
 
 proc checkProcessExitCode(errc: int): bool =
   case errc:
-    of not 0:
-      return false
     of 0:
       return true
     else:
-      doAssert(false)
+      return false
 
 proc getAllDevices*(): seq[string] =
   var
@@ -69,7 +67,12 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
       device_type  = smart_data["device"].getFields.getOrDefault("type")
     if not checkProcessExitCode(err_code):
       harvestRawData(dev, device_type.getStr)
-      harvestSmartData(dev, true)
+      try:
+        harvestSmartData(dev, true)
+      except OS_PROCESS_ERROR:
+        echo "ERROR: Cannot get SMART information from " & model_name
+      finally:
+        break
     case property:
       of RAW_READ_ERROR_RATE:
         1.getOrDismissAttr
@@ -245,7 +248,10 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     current_device = @[dev]
     smart_all = @[]
     for smartType in SmartProperty.typeof:
-      smart_line_perDevice = getSmartDataField(current_device, smartType)
+      try:
+        smart_line_perDevice = getSmartDataField(current_device, smartType)
+      finally:
+        break
       for key, value in smart_line_perDevice.pairs:
         smart_all.add(value)
         device_info = key

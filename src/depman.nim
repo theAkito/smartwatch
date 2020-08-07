@@ -1,4 +1,3 @@
-# import distros
 from distros import 
   detectOS,
   foreignDep

@@ -35,13 +35,14 @@ macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
 proc createHtmlTableContent*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): string =
   var
     attr_list: seq[seq[string]]
-  for device_info, smart_attrs in smart_data:
-    attr_list = smart_data[device_info]
-    result.add """<table style="width:350px">""" &
-               createSmartHtmlTableTitleRow(device_info[0], device_info[1], device_info[2])
-    for attr in attr_list:
-      result.add createSmartHtmlTableRow(attr[0], attr[1], attr[2], attr[3])
-    result.add """</table>"""
+  if not smart_data.hasKey(@[]):
+    for device_info, smart_attrs in smart_data:
+      attr_list = smart_data[device_info]
+      result.add """<table style="width:350px">""" &
+                createSmartHtmlTableTitleRow(device_info[0], device_info[1], device_info[2])
+      for attr in attr_list:
+        result.add createSmartHtmlTableRow(attr[0], attr[1], attr[2], attr[3])
+      result.add """</table>"""
 
 macro createSmartHtmlTable*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): untyped =
   result = quote do:

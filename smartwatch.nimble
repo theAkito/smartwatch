@@ -28,7 +28,7 @@ task configure, "Configure project.":
   exec "git submodule update --recursive --remote"
 task fbuild, "Build project.":
   exec "nimble makecfg"
-  exec "nim c src/smartwatch"
+  exec "nim c --out:smartwatch src/smartwatch"
   exec "nimble clean"
 task dbuild, "Debug Build project.":
   exec "nim c --run --define:debug_build=true --out:smartwatch --debuginfo:on src/smartwatch"
