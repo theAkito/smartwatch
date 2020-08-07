@@ -30,15 +30,21 @@ else:
     smart = "/usr/sbin/smartctl "
     smart_opts = " --all --json=c "
 
+proc checkProcessExitCode(errc: int): bool =
+  case errc:
+    of not 0:
+      return false
+    of 0:
+      return true
+    else:
+      doAssert(false)
+
 proc getAllDevices*(): seq[string] =
   var
     blockdevices: seq[string]
   let (devices, err_code) = execCmdEx(lsblk & lsblk_opts)
-  case err_code:
-    of not 0:
-      raise OS_PROCESS_ERROR.newException("lsblk failed to execute!")
-    else:
-      discard
+  if not checkProcessExitCode(err_code):
+    raise OS_PROCESS_ERROR.newException("lsblk failed to execute!")
   blockdevices = devices.splitLines
   blockdevices.delete(0)
   blockdevices.keepIf(
@@ -52,67 +58,25 @@ func hash*[A](x: seq[A]): Hash =
   result = !$result
 
 proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTable[seq[string], seq[string]] =
-  # Possible fields per SMART ID:
-  # id
-  # name
-  # value
-  # worst
-  # thresh
-  # when_failed
-  # flags (another JsonNode in itself)
-  # raw (another JsonNode in itself)
+  var
+    raw_smart_data: TaintedString
+    err_code: int
+    smart_data: JsonNode
+    model_family: string
+    model_name: string
+    serial_number: string
+    ata_smart_attributes: OrderedTable[string, JsonNode]
+    asa_table: seq[JsonNode]
+    device_info: seq[string]
+  dataHarvester
   for dev in devices:
-    var
-      (raw_smart_data, err_code) = execCmdEx("""bash -c "/usr/bin/fakesmartctl """ & dev &  """ " """)
-      # var (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
-      smart_data  = raw_smart_data.parseJson
-      model_family  = smart_data["model_family"].getStr
-      model_name  = smart_data["model_name"].getStr
-      serial_number  = smart_data["serial_number"].getStr
-      ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
-      asa_table   = ata_smart_attributes["table"].getElems
-      device_info = @[
-                        model_family,
-                        model_name,
-                        serial_number
-                     ]
+    harvestRawData(dev, debug_build)
+    harvestSmartData(dev)
     let
-      device_map  = smart_data["device"].getFields
-      device_type = device_map.getOrDefault("type")
-    case err_code:
-      of not 0:
-        (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & device_type.getStr & dev)
-        smart_data  = raw_smart_data.parseJson
-        serial_number  = smart_data["serial_number"].getStr
-        ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
-        asa_table   = ata_smart_attributes["table"].getElems
-      else:
-        discard
-    proc smart_attr_node(id: int): OrderedTable[string, JsonNode] =
-      var
-        current_smart_elem: OrderedTable[string, JsonNode]
-        avail_smart_elems: seq[int]
-        node_table: OrderedTable[string, JsonNode]
-      for elem in asa_table:
-        current_smart_elem = elem.getFields
-        ## `avail_smart_elems` = Collection of all harvested SMART IDs.
-        avail_smart_elems.add(current_smart_elem["id"].getInt)
-      if avail_smart_elems.contains(id):
-        for node in asa_table:
-          node_table = node.getFields
-          if node_table["id"].getInt == id:
-            return node_table
-          else:
-            continue
-    proc get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
-      let
-        smart_line  = @[
-                          node_table["name"].getStr,
-                          $node_table["value"],
-                          $node_table["worst"],
-                          $node_table["thresh"]
-                        ]
-      return smart_line
+      device_type  = smart_data["device"].getFields.getOrDefault("type")
+    if not checkProcessExitCode(err_code):
+      harvestRawData(dev, device_type.getStr)
+      harvestSmartData(dev, true)
     case property:
       of RAW_READ_ERROR_RATE:
         1.getOrDismissAttr
