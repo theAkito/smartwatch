@@ -23,7 +23,7 @@ const
   lsblk = "/bin/lsblk "
   lsblk_opts = " -pilo KNAME "
 
-proc checkProcessExitCode(errc: int): bool =
+proc isProcessExitCodeZero(errc: int): bool =
   case errc:
     of 0:
       return true
@@ -34,7 +34,7 @@ proc getAllDevices*(): seq[string] =
   var
     blockdevices: seq[string]
   let (devices, err_code) = execCmdEx(lsblk & lsblk_opts)
-  if not checkProcessExitCode(err_code):
+  if not isProcessExitCodeZero(err_code):
     raise OS_PROCESS_ERROR.newException("lsblk failed to execute!")
   blockdevices = devices.splitLines
   blockdevices.delete(0)
@@ -48,7 +48,15 @@ func hash*[A](x: seq[A]): Hash =
   for it in x.items: result = result !& hash(it)
   result = !$result
 
-proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTable[seq[string], seq[string]] =
+proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTable[seq[string], seq[string]]
+                      {.raises: [
+                        OS_PROCESS_ERROR,
+                        Defect,
+                        IOError,
+                        OSError,
+                        ValueError,
+                        Exception
+                        ].} =
   var
     raw_smart_data: TaintedString
     err_code: int
@@ -65,14 +73,13 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
     harvestSmartData(dev)
     let
       device_type  = smart_data["device"].getFields.getOrDefault("type")
-    if not checkProcessExitCode(err_code):
-      harvestRawData(dev, device_type.getStr)
+    if not isProcessExitCodeZero(err_code):
+      harvestRawData(dev, debug_build, device_type.getStr)
       try:
         harvestSmartData(dev, true)
       except OS_PROCESS_ERROR:
         echo "ERROR: Cannot get SMART information from " & model_name
-      finally:
-        break
+        raise getCurrentException()
     case property:
       of RAW_READ_ERROR_RATE:
         1.getOrDismissAttr
@@ -249,8 +256,8 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     smart_all = @[]
     for smartType in SmartProperty.typeof:
       try:
-        smart_line_perDevice = getSmartDataField(current_device, smartType)
-      finally:
+        smart_line_perDevice = getSmartDataField(current_device, smartType);
+      except OS_PROCESS_ERROR:
         break
       for key, value in smart_line_perDevice.pairs:
         smart_all.add(value)

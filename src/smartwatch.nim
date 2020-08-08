@@ -5,10 +5,8 @@ import
   tablegenerator,
   parseopt
 from os import
-  paramStr,
   commandLineParams,
-  getCurrentDir,
-  getEnv
+  getCurrentDir
 from osproc import 
   execCmdEx
 from strutils import
@@ -26,7 +24,7 @@ include
   depman,
   debug
 
-router mainRouter:
+router router:
   get "/dashboard":
     redirect "/"
   get "/":
@@ -61,25 +59,26 @@ router mainRouter:
 proc areSmartctlPermissionsGiven(): bool =
   let
     (raw_smart_output, _) = execCmdEx("/usr/sbin/smartctl --scan-open --json=c")
-    smart_output = raw_smart_output.parseJson
-    smart_devices = smart_output.getFields.getOrDefault("devices").getElems
+    smart_devices = raw_smart_output.parseJson
+                                    .getFields
+                                    .getOrDefault("devices")
+                                    .getElems
   for dev in smart_devices:
-    let smart_device_info = dev.getFields
-    if smart_device_info.hasKey("open_error") and
-       smart_device_info["open_error"].getStr.contains("Permission denied"):
+    if dev.getFields
+          .hasKey("open_error") and
+       dev.getFields["open_error"].getStr
+          .contains("Permission denied"):
       return false
   return true
 
 proc run() =
   if debug_build == false:
     if not areSmartctlPermissionsGiven():
-      raise OS_PERMISSION_ERROR.newException("Please run me as the `root` user.")
-  let
-    params = commandLineParams()
+      raise OS_PERMISSION_ERROR.newException("\nNot permitted to open devices.\nPlease run me as the `root` user.\n")
   var
     port: Port
     dir: string
-  for kind, key, val in params.getopt():
+  for kind, key, val in commandLineParams().getopt():
     case kind
       of cmdArgument:
         discard
@@ -92,7 +91,7 @@ proc run() =
   if dir == "": dir = getCurrentDir() & "/" & "smartwatchstatic"
   let
     settings = newSettings(port = port, staticDir = dir)
-  var jester = initJester(mainRouter, settings = settings)
+  var jester = initJester(router, settings = settings)
   jester.serve()
 
 when isMainModule:
