@@ -23,7 +23,7 @@ const
   lsblk = "/bin/lsblk "
   lsblk_opts = " -pilo KNAME "
 
-proc isProcessExitCodeZero(errc: int): bool =
+func isProcessExitCodeZero(errc: int): bool =
   case errc:
     of 0:
       return true

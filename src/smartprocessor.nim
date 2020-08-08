@@ -24,7 +24,7 @@ template dataHarvester*() =
   # when_failed
   # flags (another JsonNode in itself)
   # raw (another JsonNode in itself)
-  proc getDeviceTypeOrDefault(dev_type: string = ""): string =
+  func getDeviceTypeOrDefault(dev_type: string = ""): string =
     if dev_type != "":
       result = """ of type """ & """"""" & dev_type & """""""
   proc harvestRawData(dev: string, debug: bool = false, dev_type: string) =
@@ -69,7 +69,7 @@ template dataHarvester*() =
                       model_name,
                       serial_number
                    ]
-  proc smart_attr_node(id: int): OrderedTable[string, JsonNode] =
+  func smart_attr_node(id: int): OrderedTable[string, JsonNode] =
     var
       current_smart_elem: OrderedTable[string, JsonNode]
       avail_smart_elems: seq[int]
@@ -85,7 +85,7 @@ template dataHarvester*() =
           return node_table
         else:
           continue
-  proc get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
+  func get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
     let
       smart_line  = @[
                         node_table["name"].getStr,
