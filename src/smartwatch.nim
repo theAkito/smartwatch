@@ -51,6 +51,56 @@ router router:
 </nav>""" &
       createSmartHtmlTable(smart_all) &
       br()
+  
+  get "/about":
+    resp """
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>About Smartwatch</title>
+  <meta name="description" content="About Smartwatch">
+  <meta name="author" content="Akito">
+
+  <link rel="stylesheet" href="css/about.css">
+
+</head>
+         """ &
+         """<header><strong>About Smartwatch</strong></header>""" &
+         br() &
+         """<strong>License</strong>""" &
+         br() &
+         br() &
+         "Copyright (C) 2020  Akito <the@akito.ooo>" &
+         br() &
+         br() &
+         "This program is free software: you can redistribute it and/or modify" &
+         br() &
+         "it under the terms of the GNU General Public License as published by" &
+         br() &
+         "the Free Software Foundation, either version 3 of the License, or" &
+         br() &
+         "(at your option) any later version." &
+         br() &
+         br() &
+         "This program is distributed in the hope that it will be useful," &
+         br() &
+         "but WITHOUT ANY WARRANTY; without even the implied warranty of" &
+         br() &
+         "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" &
+         br() &
+         "GNU General Public License for more details." &
+         br() &
+         br() &
+         "You should have received a copy of the GNU General Public License" &
+         br() &
+         "along with this program.  If not, see <https://www.gnu.org/licenses/>."
+  get "/management":
+    redirect "/"
+  get "/settings":
+    redirect "/"
   get "/json":
     resp "This response will be a JSON!"
   get "/test":
