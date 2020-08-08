@@ -72,13 +72,13 @@ proc getSmartDataField(devices: seq[string], property: SmartProperty): OrderedTa
     harvestRawData(dev, debug_build)
     harvestSmartData(dev)
     let
-      device_type  = smart_data["device"].getFields.getOrDefault("type")
+      device_type  = smart_data["device"].getFields.getOrDefault("type").getStr
     if not isProcessExitCodeZero(err_code):
-      harvestRawData(dev, debug_build, device_type.getStr)
+      harvestRawData(dev, debug_build, device_type)
       try:
-        harvestSmartData(dev, true)
+        harvestSmartData(dev, device_type, true)
       except OS_PROCESS_ERROR:
-        echo "ERROR: Cannot get SMART information from " & model_name
+        echo getCurrentExceptionMsg()
         raise getCurrentException()
     case property:
       of RAW_READ_ERROR_RATE:

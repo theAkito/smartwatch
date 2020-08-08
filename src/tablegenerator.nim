@@ -24,13 +24,13 @@ macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
 
 macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 3
-  var name= arg[0]
-  var value= arg[1]
-  var worst= arg[2]
+  var model_family= arg[0]
+  var model_name= arg[1]
+  var serial_number= arg[2]
   result = quote do:
     "<thead>" &
     "<tr>" &
-    th(`name` & `value` & `worst`) &
+    th(`model_family` & " " & `model_name` & " " & `serial_number`) &
     th("Value") &
     th("Worst") &
     th("Thresh") &

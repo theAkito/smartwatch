@@ -24,6 +24,9 @@ template dataHarvester*() =
   # when_failed
   # flags (another JsonNode in itself)
   # raw (another JsonNode in itself)
+  proc getDeviceTypeOrDefault(dev_type: string = ""): string =
+    if dev_type != "":
+      result = """ of type """ & """"""" & dev_type & """""""
   proc harvestRawData(dev: string, debug: bool = false, dev_type: string) =
     if not debug:
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & dev_type & " " & dev)
@@ -32,7 +35,7 @@ template dataHarvester*() =
       (raw_smart_data, err_code) = execCmdEx("""bash -c "/usr/bin/fakesmartctl """ & dev &  """ " """)
     else:
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
-  proc harvestSmartData(dev: string, explicit: bool = false)
+  proc harvestSmartData(dev: string, dev_type: string = "", explicit: bool = false)
                        {.raises: [
                                   OS_PROCESS_ERROR,
                                   Defect,
@@ -42,7 +45,12 @@ template dataHarvester*() =
                                   Exception
                                  ].} =
     if explicit and not isProcessExitCodeZero(err_code):
-      raise OS_PROCESS_ERROR.newException("ERROR: Cannot get SMART information from " & model_name)
+      raise OS_PROCESS_ERROR.newException(
+                                          "ERROR: Cannot get SMART information from " &
+                                          """"""" & model_name & """"""" &
+                                          getDeviceTypeOrDefault(dev_type) &
+                                          "."
+                                         )
     smart_data  = raw_smart_data.parseJson
     if smart_data.hasKey("model_family"):
       model_family = smart_data["model_family"].getStr

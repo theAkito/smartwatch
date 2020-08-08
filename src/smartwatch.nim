@@ -28,8 +28,11 @@ router router:
   get "/dashboard":
     redirect "/"
   get "/":
-    let
-      smart_all: OrderedTable[seq[string], seq[seq[string]]] = getSmartDataAll(@["/dev/sda", "/dev/sdb"])
+    var smart_all: OrderedTable[seq[string], seq[seq[string]]]
+    if debug_build:
+        smart_all = getSmartDataAll(@["/dev/sda", "/dev/sdb", "/dev/sdc", "/dev/sdd"])
+    else:
+        smart_all = getSmartDataAll(getAllDevices())
     resp """<!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="css/dashboard.css">

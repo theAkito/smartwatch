@@ -6,7 +6,7 @@ nav, input {
 body {
   font: 100%/1.1 'Arial', sans-serif;
   margin: 0;
-  max-width: 100%;
+  max-width: 510px;
   /* min-width: 5000px; */
 }
 
