@@ -31,7 +31,7 @@ task fbuild, "Build project.":
   exec "nim c --out:smartwatch src/smartwatch"
   exec "nimble clean"
 task dbuild, "Debug Build project.":
-  exec "nim c --run --define:debug_build=true --out:smartwatch --debuginfo:on src/smartwatch"
+  exec "nim c --define:debug_build=true --out:smartwatch --debuginfo:on src/smartwatch"
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim tasks/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":

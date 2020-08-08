@@ -21,6 +21,7 @@ nimble fbuild
 ```
 for the release build or
 ```
+cp fakesmartctl.sh /usr/bin/fakesmartctl
 nimble dbuild
 ```
 for the debug/development build.
@@ -30,6 +31,9 @@ Run the server like this:
 ./smartwatch --port=50232 --dir=./smartwatchstatic
 ```
 The arguments' values above are implicitly used, when running the server without arguments.
+
+Note, that the server needs `root` permissions to be able to run.
+This is one of the prerequisites for getting SMART information from hardware.
 
 ## Where
 Currently runs on Debian based distributions. Linux is generally supported, but currently not accounted for; neither testing-wise nor dependency-checking-wise.

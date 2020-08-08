@@ -1,7 +1,12 @@
 import
-  macros,
-  tables,
-  htmlgen
+  macros
+from tables import
+  OrderedTable,
+  hasKey,
+  pairs,
+  `[]`
+from htmlgen import
+  th
 
 macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 4
