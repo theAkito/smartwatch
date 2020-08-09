@@ -37,10 +37,10 @@ macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
     "</tr>" &
     "</thead>"
 
-proc createHtmlTableContent*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): string =
-  var
-    attr_list: seq[seq[string]]
+func createHtmlTableContent*(smart_data: OrderedTable[seq[string], seq[seq[string]]]): string =
   if not smart_data.hasKey(@[]):
+    var
+      attr_list: seq[seq[string]]
     for device_info, smart_attrs in smart_data:
       attr_list = smart_data[device_info]
       result.add """<table style="width:350px">""" &

@@ -1,14 +1,12 @@
 template getOrDismissAttr*(id: int) =
   block this_attr:
-    if asa_table == @[]:
+    let
+      node_table = smart_attr_node(id)
+    if asa_table == @[] or not
+       node_table.hasKey("id") or
+       node_table["id"].getInt != id:
       # Failed to acquire SMART attributes
       # because failed to read device.
-      break this_attr
-    let
-      current_id = id
-      node_table = smart_attr_node(current_id)
-    if not node_table.hasKey("id") or
-            node_table["id"].getInt != current_id:
       break this_attr
     var seqtable = initOrderedTable[seq[string], seq[string]]()
     seqtable[device_info] = get_final_smart_attr(node_table)
