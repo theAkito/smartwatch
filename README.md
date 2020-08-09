@@ -50,6 +50,7 @@ Windows support, could theoretically be possible, however it is not planned and 
 This project is currently in alpha state. Some basic functionality is missing or incomplete.
 
 ## TODO
+* Convert `fakesmartctl.sh` to `fakesmartctl.nims`
 * Clients gathering storage media info across several servers
 * Config file for devices and clients
 * Improve performance and efficiency (see TODOs in source)
@@ -61,6 +62,8 @@ This project is currently in alpha state. Some basic functionality is missing or
 * Aliasing devices in front-end
 * Set up binary releases
 * Set up CI
+* Add Dockerfile
+* Add docker-compose.yaml
 * Publish on Nimble
 
 ## License
