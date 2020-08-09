@@ -92,5 +92,5 @@ template dataHarvester*() =
                         $node_table["value"],
                         $node_table["worst"],
                         $node_table["thresh"]
-                      ]
+                     ]
     return smart_line

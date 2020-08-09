@@ -254,11 +254,17 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
   for dev in devices:
     current_device = @[dev]
     smart_all = @[]
-    for smartType in SmartProperty.typeof:
+    for smart_attr in SmartProperty.typeof:
+      #TODO Instead of iterating over every possible SmartProperty
+      # we should first gather every available id, then iterate over all
+      # actually provided ids by the particular device.
+      # This should increase performance by a lot.
       try:
-        smart_line_perDevice = getSmartDataField(current_device, smartType);
+        smart_line_perDevice = getSmartDataField(current_device, smart_attr);
       except OS_PROCESS_ERROR:
         break
+      except:
+        raise getCurrentException()
       for key, value in smart_line_perDevice.pairs:
         smart_all.add(value)
         device_info = key

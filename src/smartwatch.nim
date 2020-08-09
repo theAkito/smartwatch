@@ -70,8 +70,22 @@ router router:
   <link rel="stylesheet" href="css/about.css">
 
 </head>
+<header>
+  <a href='/'>Logo</a>
+  <label for='toggleMenu'>
+    <img src='' alt='menu' />
+  </label>
+</header><input id='toggleMenu' type='checkbox' />
+<nav>
+  <ul>
+    <li><a href='/dashboard'>Dashboard</a></li>
+    <li><a href='/management'>Management</a></li>
+    <li><a href='/settings'>Settings</a></li>
+    <li><a href='/about'>About</a></li>
+    <!--<li><a href='/test'>Test</a></li>-->
+  </ul>
+</nav>
          """ &
-         """<header><strong>About Smartwatch</strong></header>""" &
          br() &
          """<strong>License</strong>""" &
          br() &
