@@ -49,6 +49,20 @@ Windows support, could theoretically be possible, however it is not planned and 
 ## Project Status
 This project is currently in alpha state. Some basic functionality is missing or incomplete.
 
+## TODO
+* Clients gathering storage media info across several servers
+* Config file for devices and clients
+* Improve performance and efficiency (see TODOs in source)
+* Improve CSS/HTML frontend (see TODOs in source)
+* Add Settings in front-end (changing front-end colours, etc.)
+* Add Management in front-end (adding clients, etc.)
+* Add build date to About page
+* Add Git revision to About page
+* Aliasing devices in front-end
+* Set up binary releases
+* Set up CI
+* Publish on Nimble
+
 ## License
 Copyright (C) 2020  Akito <the@akito.ooo>
 
