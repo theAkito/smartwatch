@@ -11,6 +11,7 @@ body {
 }
 
 header {
+  font: 100%/1.1 'Arial', sans-serif;
   background: #122632;
   color: #F15C22;
   display: flex;
