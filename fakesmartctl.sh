@@ -19,7 +19,7 @@
 SDA=false
 SDB=false
 SDC=false
-SDE=false
+SDD=false
 for arg in $@; do
   if [[ $arg == "/dev/sda" ]]; then
     SDA=true

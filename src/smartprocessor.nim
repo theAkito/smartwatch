@@ -30,7 +30,7 @@ template dataHarvester*() =
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & dev_type & " " & dev)
   proc harvestRawData(dev: string, debug: bool = false) =
     if debug:
-      (raw_smart_data, err_code) = execCmdEx("""bash -c "/usr/bin/fakesmartctl """ & dev &  """ " """)
+      (raw_smart_data, err_code) = execCmdEx("./fakesmartctl " & dev )
     else:
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & dev)
   proc harvestSmartData(dev: string, dev_type: string = "", explicit: bool = false)

@@ -21,7 +21,6 @@ nimble fbuild
 ```
 for the release build or
 ```
-cp fakesmartctl.sh /usr/bin/fakesmartctl
 nimble dbuild
 ```
 for the debug/development build.
@@ -50,7 +49,7 @@ Windows support, could theoretically be possible, however it is not planned and 
 This project is currently in alpha state. Some basic functionality is missing or incomplete.
 
 ## TODO
-* Convert `fakesmartctl.sh` to `fakesmartctl.nims`
+* ~~Convert `fakesmartctl.sh` to `fakesmartctl.nims`~~
 * Clients gathering storage media info across several servers
 * Config file for devices and clients
 * Improve performance and efficiency (see TODOs in source)

@@ -20,4 +20,8 @@ htmldocs/
 # Binaries and Temp Files
 smartwatch
 smartharvester
+fakesmartctl
+fakesmartctl.sh
+fakesmartctl.nims
+fakesmartctl_times.sh
 test*
