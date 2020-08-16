@@ -21,7 +21,9 @@ htmldocs/
 smartwatch
 smartharvester
 fakesmartctl
-fakesmartctl.sh
 fakesmartctl.nims
+fakesmartctl.jl
+fakesmartctl.sh
+fakesmartctl.rs
 fakesmartctl_times.sh
 test*
