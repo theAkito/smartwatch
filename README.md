@@ -52,7 +52,7 @@ This project is currently in alpha state. Some basic functionality is missing or
 * ~~Convert `fakesmartctl.sh` to `fakesmartctl.nims`~~
 * Clients gathering storage media info across several servers
 * Config file for devices and clients
-* Improve performance and efficiency (see TODOs in source)
+* ~~Improve performance and efficiency (see TODOs in source)~~
 * Improve CSS/HTML frontend (see TODOs in source)
 * Add Settings in front-end (changing front-end colours, etc.)
 * Add Management in front-end (adding clients, etc.)

@@ -1,3 +1,4 @@
+#TODO Maybe not necessary. Postponing this question with low priority.
 type
   SmartProperty* = enum
     RAW_READ_ERROR_RATE,

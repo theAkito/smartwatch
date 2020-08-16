@@ -1,7 +1,7 @@
-template getOrDismissAttr*(id: int) =
+template getOrDismissAttr*(id: int, asa_table: seq[untyped]) =
   block this_attr:
     let
-      node_table = smart_attr_node(id)
+      node_table = smart_attr_node(id, asa_table)
     if asa_table == @[] or not
        node_table.hasKey("id") or
        node_table["id"].getInt != id:
