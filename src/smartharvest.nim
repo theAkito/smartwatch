@@ -47,46 +47,46 @@ func hash*[A](x: seq[A]): Hash =
   for it in x.items: result = result !& hash(it)
   result = !$result
 
-func smart_attr_node(id: int, asa_table: seq[JsonNode]): OrderedTable[string, JsonNode] =
+func getSmartAttrNode(id: int, ata_smart_attributes_table: seq[JsonNode]): OrderedTable[string, JsonNode] =
   var
     current_smart_elem: OrderedTable[string, JsonNode]
     avail_smart_elems: seq[int]
-    node_table: OrderedTable[string, JsonNode]
-  for elem in asa_table:
+    ata_smart_attributes_table_node: OrderedTable[string, JsonNode]
+  for elem in ata_smart_attributes_table:
     current_smart_elem = elem.getFields
     ## `avail_smart_elems` = Collection of all harvested SMART IDs.
     avail_smart_elems.add(current_smart_elem["id"].getInt)
   if avail_smart_elems.contains(id):
-    for node in asa_table:
-      node_table = node.getFields
-      if node_table["id"].getInt == id:
-        return node_table
+    for node in ata_smart_attributes_table:
+      ata_smart_attributes_table_node = node.getFields
+      if ata_smart_attributes_table_node["id"].getInt == id:
+        return ata_smart_attributes_table_node
       else:
         continue
 
-func get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
+func getSmartAttrFinal(ata_smart_attributes_table_node: OrderedTable[string, JsonNode]): seq[string] =
   let
     smart_line  = @[
-                      node_table["name"].getStr,
-                      $node_table["value"],
-                      $node_table["worst"],
-                      $node_table["thresh"]
+                      ata_smart_attributes_table_node["name"].getStr,
+                      $ata_smart_attributes_table_node["value"],
+                      $ata_smart_attributes_table_node["worst"],
+                      $ata_smart_attributes_table_node["thresh"]
                     ]
   return smart_line
 
-func getSmartAllAttrId(asa_table: seq[JsonNode]): seq[int] =
+func getSmartAllAttrId(ata_smart_attributes_table: seq[JsonNode]): seq[int] =
     var
       avail_id_list: seq[int]
-    for key, value in asa_table:
+    for key, value in ata_smart_attributes_table:
       avail_id_list.add(value["id"].getInt)
     return avail_id_list
 
-func getAttr(id: int, device_info: seq[string], asa_table: seq[JsonNode]):
+func getAttr(id: int, device_info: seq[string], ata_smart_attributes_table: seq[JsonNode]):
                 OrderedTable[seq[string], seq[string]] =
   let
-    node_table = smart_attr_node(id, asa_table)
+    ata_smart_attributes_table_node = getSmartAttrNode(id, ata_smart_attributes_table)
   var seqtable = initOrderedTable[seq[string], seq[string]]()
-  seqtable[device_info] = get_final_smart_attr(node_table)
+  seqtable[device_info] = getSmartAttrFinal(ata_smart_attributes_table_node)
   return seqtable
 
 func getDeviceTypeOrDefault(dev_type: string = ""): string =
@@ -105,7 +105,7 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     model_name: string
     serial_number: string
     ata_smart_attributes: OrderedTable[string, JsonNode]
-    asa_table: seq[JsonNode]
+    ata_smart_attributes_table: seq[JsonNode]
     device_info: seq[string]
   proc harvestRawData(dev: string, debug: bool = false, dev_type: string) =
     if not debug:
@@ -142,7 +142,7 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
       serial_number = ""
     if smart_data.hasKey("ata_smart_attributes"):
       ata_smart_attributes = smart_data["ata_smart_attributes"].getFields
-      asa_table = ata_smart_attributes["table"].getElems
+      ata_smart_attributes_table = ata_smart_attributes["table"].getElems
     model_name = smart_data["model_name"].getStr
     device_info = @[
                       model_family,
@@ -166,9 +166,9 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
         continue
       except:
         raise getCurrentException()
-    let avail_id_list = getSmartAllAttrId(asa_table)
+    let avail_id_list = getSmartAllAttrId(ata_smart_attributes_table)
     for id in avail_id_list:
-      smart_line_perDevice = id.getAttr(device_info, asa_table)
+      smart_line_perDevice = id.getAttr(device_info, ata_smart_attributes_table)
       for _, value in smart_line_perDevice.pairs:
         smart_all.add(value)
     smart_all_perDevice[device_info] = smart_all
