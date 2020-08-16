@@ -13,7 +13,6 @@ from sequtils import
   delete
 include
   smarttypes,
-  smartprocessor,
   oscom,
   debug
 
@@ -48,16 +47,6 @@ func hash*[A](x: seq[A]): Hash =
   for it in x.items: result = result !& hash(it)
   result = !$result
 
-func get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
-  let
-    smart_line  = @[
-                      node_table["name"].getStr,
-                      $node_table["value"],
-                      $node_table["worst"],
-                      $node_table["thresh"]
-                    ]
-  return smart_line
-
 func smart_attr_node(id: int, asa_table: seq[JsonNode]): OrderedTable[string, JsonNode] =
   var
     current_smart_elem: OrderedTable[string, JsonNode]
@@ -75,6 +64,16 @@ func smart_attr_node(id: int, asa_table: seq[JsonNode]): OrderedTable[string, Js
       else:
         continue
 
+func get_final_smart_attr(node_table: OrderedTable[string, JsonNode]): seq[string] =
+  let
+    smart_line  = @[
+                      node_table["name"].getStr,
+                      $node_table["value"],
+                      $node_table["worst"],
+                      $node_table["thresh"]
+                    ]
+  return smart_line
+
 func getSmartAllAttrId(asa_table: seq[JsonNode]): seq[int] =
     var
       avail_id_list: seq[int]
@@ -82,180 +81,13 @@ func getSmartAllAttrId(asa_table: seq[JsonNode]): seq[int] =
       avail_id_list.add(value["id"].getInt)
     return avail_id_list
 
-
-proc getSmartDataField( 
-                        smart_data: JsonNode,
-                        device_info: seq[string],
-                        asa_table: seq[JsonNode],
-                        property_id: int
-                      ): OrderedTable[seq[string], seq[string]]
-                      {.raises: [
-                        ValueError,
-                        ].} =
-  case property_id:
-    of 1:
-      1.getOrDismissAttr(asa_table)
-    of 2:
-      2.getOrDismissAttr(asa_table)
-    of 3:
-      3.getOrDismissAttr(asa_table)
-    of 4:
-      4.getOrDismissAttr(asa_table)
-    of 5:
-      5.getOrDismissAttr(asa_table)
-    of 6:
-      6.getOrDismissAttr(asa_table)
-    of 7:
-      7.getOrDismissAttr(asa_table)
-    of 8:
-      8.getOrDismissAttr(asa_table)
-    of 9:
-      9.getOrDismissAttr(asa_table)
-    of 10:
-      10.getOrDismissAttr(asa_table)
-    of 11:
-      11.getOrDismissAttr(asa_table)
-    of 12:
-      12.getOrDismissAttr(asa_table)
-    of 13:
-      13.getOrDismissAttr(asa_table)
-    of 22:
-      22.getOrDismissAttr(asa_table)
-    of 170:
-      170.getOrDismissAttr(asa_table)
-    of 171:
-      171.getOrDismissAttr(asa_table)
-    of 172:
-      172.getOrDismissAttr(asa_table)
-    of 173:
-      173.getOrDismissAttr(asa_table)
-    of 174:
-      174.getOrDismissAttr(asa_table)
-    of 175:
-      175.getOrDismissAttr(asa_table)
-    of 176:
-      176.getOrDismissAttr(asa_table)
-    of 177:
-      177.getOrDismissAttr(asa_table)
-    of 179:
-      179.getOrDismissAttr(asa_table)
-    of 180:
-      180.getOrDismissAttr(asa_table)
-    of 181:
-      181.getOrDismissAttr(asa_table)
-    of 182:
-      182.getOrDismissAttr(asa_table)
-    of 183:
-      183.getOrDismissAttr(asa_table)
-    of 184:
-      184.getOrDismissAttr(asa_table)
-    of 185:
-      185.getOrDismissAttr(asa_table)
-    of 186:
-      186.getOrDismissAttr(asa_table)
-    of 187:
-      187.getOrDismissAttr(asa_table)
-    of 188:
-      188.getOrDismissAttr(asa_table)
-    of 189:
-      189.getOrDismissAttr(asa_table)
-    of 190:
-      190.getOrDismissAttr(asa_table)
-    of 191:
-      191.getOrDismissAttr(asa_table)
-    of 192:
-      192.getOrDismissAttr(asa_table)
-    of 193:
-      193.getOrDismissAttr(asa_table)
-    of 194:
-      194.getOrDismissAttr(asa_table)
-    of 195:
-      195.getOrDismissAttr(asa_table)
-    of 196:
-      196.getOrDismissAttr(asa_table)
-    of 197:
-      197.getOrDismissAttr(asa_table)
-    of 198:
-      198.getOrDismissAttr(asa_table)
-    of 199:
-      199.getOrDismissAttr(asa_table)
-    of 200:
-      200.getOrDismissAttr(asa_table)
-    of 201:
-      201.getOrDismissAttr(asa_table)
-    of 202:
-      202.getOrDismissAttr(asa_table)
-    of 203:
-      203.getOrDismissAttr(asa_table)
-    of 204:
-      204.getOrDismissAttr(asa_table)
-    of 205:
-      205.getOrDismissAttr(asa_table)
-    of 206:
-      206.getOrDismissAttr(asa_table)
-    of 207:
-      207.getOrDismissAttr(asa_table)
-    of 208:
-      208.getOrDismissAttr(asa_table)
-    of 209:
-      209.getOrDismissAttr(asa_table)
-    of 210:
-      210.getOrDismissAttr(asa_table)
-    of 211:
-      211.getOrDismissAttr(asa_table)
-    of 212:
-      212.getOrDismissAttr(asa_table)
-    of 220:
-      220.getOrDismissAttr(asa_table)
-    of 221:
-      221.getOrDismissAttr(asa_table)
-    of 222:
-      222.getOrDismissAttr(asa_table)
-    of 223:
-      223.getOrDismissAttr(asa_table)
-    of 224:
-      224.getOrDismissAttr(asa_table)
-    of 225:
-      225.getOrDismissAttr(asa_table)
-    of 226:
-      226.getOrDismissAttr(asa_table)
-    of 227:
-      227.getOrDismissAttr(asa_table)
-    of 228:
-      228.getOrDismissAttr(asa_table)
-    of 230:
-      230.getOrDismissAttr(asa_table)
-    of 231:
-      231.getOrDismissAttr(asa_table)
-    of 232:
-      232.getOrDismissAttr(asa_table)
-    of 233:
-      233.getOrDismissAttr(asa_table)
-    of 234:
-      234.getOrDismissAttr(asa_table)
-    of 235:
-      235.getOrDismissAttr(asa_table)
-    of 240:
-      240.getOrDismissAttr(asa_table)
-    of 241:
-      241.getOrDismissAttr(asa_table)
-    of 242:
-      242.getOrDismissAttr(asa_table)
-    of 243:
-      243.getOrDismissAttr(asa_table)
-    of 244:
-      244.getOrDismissAttr(asa_table)
-    of 249:
-      249.getOrDismissAttr(asa_table)
-    of 250:
-      250.getOrDismissAttr(asa_table)
-    of 251:
-      251.getOrDismissAttr(asa_table)
-    of 252:
-      252.getOrDismissAttr(asa_table)
-    of 254:
-      254.getOrDismissAttr(asa_table)
-    else: assert(false)
+func getAttr*(id: int, device_info: seq[string], asa_table: seq[JsonNode]):
+                OrderedTable[seq[string], seq[string]] =
+  let
+    node_table = smart_attr_node(id, asa_table)
+  var seqtable = initOrderedTable[seq[string], seq[string]]()
+  seqtable[device_info] = get_final_smart_attr(node_table)
+  return seqtable
 
 proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[string]]] =
   var
@@ -321,7 +153,9 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     harvestRawData(dev, debug_build)
     harvestSmartData(dev)
     let
-      device_type  = smart_data["device"].getFields.getOrDefault("type").getStr
+      device_type  = smart_data["device"].getFields
+                                         .getOrDefault("type")
+                                         .getStr
     if not isProcessExitCodeZero(err_code):
       harvestRawData(dev, debug_build, device_type)
       try:
@@ -329,14 +163,11 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
       except OS_PROCESS_ERROR:
         echo getCurrentExceptionMsg()
         continue
+      except:
+        raise getCurrentException()
     let avail_id_list = getSmartAllAttrId(asa_table)
     for id in avail_id_list:
-      smart_line_perDevice = getSmartDataField(
-                                                smart_data,
-                                                device_info,
-                                                asa_table,
-                                                id
-                                              )
+      smart_line_perDevice = id.getAttr(device_info, asa_table)
       for _, value in smart_line_perDevice.pairs:
         smart_all.add(value)
     smart_all_perDevice[device_info] = smart_all
