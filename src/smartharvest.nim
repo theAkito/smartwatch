@@ -81,13 +81,17 @@ func getSmartAllAttrId(asa_table: seq[JsonNode]): seq[int] =
       avail_id_list.add(value["id"].getInt)
     return avail_id_list
 
-func getAttr*(id: int, device_info: seq[string], asa_table: seq[JsonNode]):
+func getAttr(id: int, device_info: seq[string], asa_table: seq[JsonNode]):
                 OrderedTable[seq[string], seq[string]] =
   let
     node_table = smart_attr_node(id, asa_table)
   var seqtable = initOrderedTable[seq[string], seq[string]]()
   seqtable[device_info] = get_final_smart_attr(node_table)
   return seqtable
+
+func getDeviceTypeOrDefault(dev_type: string = ""): string =
+  if dev_type != "":
+    result = """ of type """ & """"""" & dev_type & """""""
 
 proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[string]]] =
   var
@@ -103,9 +107,6 @@ proc getSmartDataAll*(devices: seq[string]): OrderedTable[seq[string], seq[seq[s
     ata_smart_attributes: OrderedTable[string, JsonNode]
     asa_table: seq[JsonNode]
     device_info: seq[string]
-  func getDeviceTypeOrDefault(dev_type: string = ""): string =
-    if dev_type != "":
-      result = """ of type """ & """"""" & dev_type & """""""
   proc harvestRawData(dev: string, debug: bool = false, dev_type: string) =
     if not debug:
       (raw_smart_data, err_code) = execCmdEx(smart & smart_opts & "--device=" & dev_type & " " & dev)
