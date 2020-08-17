@@ -35,9 +35,9 @@ Note, that the server needs `root` permissions to be able to run.
 This is one of the prerequisites for getting SMART information from hardware.
 
 ## Where
-Currently runs on Debian based distributions. Linux is generally supported, but currently not accounted for; neither testing-wise nor dependency-checking-wise.
-Windows support, could theoretically be possible, however it is not planned and not probable.
-(You shouldn't run a server with Windows on it, anyway...)
+Currently runs on Linux and BSD based distributions.
+Windows support would require rewriting fundamental project structures (dependency on `smartmontool`'s and `lsblk`'s API). Since using this program on Windows is not recommended (because a server should run either Linux or BSD) I would want to refrain from adding a second fundamental structure to the project, just to support an OS that is not suited for server use, compared to its competitors, anyway.
+If you really need Windows support, then you need to have a fake `smartmontools` and fake `lsblk` installed on the OS. These fake tools need to have the exact API as their originals. Meaning, the JSON output of the former should be precisely the same. The modification for parsing a different `lsblk`'s would be minimal, so that one is less impactful and this change could be easily implemented. Basically, `lsblk` here just returns a list of devices under `/dev/`, delimited by a newline. Not hard to change this behaviour depending on the OS. However, changing the `SMART` API of `smartmontools` to the API of another `SMART` tool would require rewriting almost everything.
 
 ## Goals
 1. Minimalism
