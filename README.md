@@ -50,6 +50,7 @@ This project is currently in alpha state. Some basic functionality is missing or
 
 ## TODO
 * ~~Convert `fakesmartctl.sh` to `fakesmartctl.nims`~~
+* ~~Determine platform support~~
 * Clients gathering storage media info across several servers
 * Config file for devices and clients
 * ~~Improve performance and efficiency (see TODOs in source)~~
