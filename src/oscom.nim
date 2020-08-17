@@ -52,3 +52,5 @@ proc getDeps*() =
         )
       foreignDep "coreutils"
       foreignDep "smartmontools"
+  if detectOs(Windows):
+    raise OSError.newException("Nope. Not on Windows.")
