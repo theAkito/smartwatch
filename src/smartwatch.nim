@@ -20,8 +20,10 @@ from json import
   hasKey
 from tables import 
   hasKey
+from oscom import 
+  OS_PERMISSION_ERROR,
+  getDeps
 include
-  depman,
   debug
 
 router router:
@@ -139,6 +141,7 @@ proc areSmartctlPermissionsGiven(): bool =
   return true
 
 proc run() =
+  getDeps()
   if debug_build == false:
     if not areSmartctlPermissionsGiven():
       raise OS_PERMISSION_ERROR.newException("\nNot permitted to open devices.\nPlease run me as the `root` user.\n")

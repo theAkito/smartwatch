@@ -11,9 +11,9 @@ from sequtils import
   keepIf,
   filter,
   delete
+from oscom import 
+  OS_PROCESS_ERROR
 include
-  smarttypes,
-  oscom,
   debug
 
 const
