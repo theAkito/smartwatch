@@ -115,7 +115,13 @@ router router:
          br() &
          "You should have received a copy of the GNU General Public License" &
          br() &
-         "along with this program.  If not, see <https://www.gnu.org/licenses/>."
+         "along with this program.  If not, see <https://www.gnu.org/licenses/>." &
+         br() &
+         br() &
+         br() &
+         "Git revision: " & git_rev &
+         br() &
+         "Build date: " & build_date
   get "/management":
     redirect "/"
   get "/settings":

@@ -10,10 +10,11 @@ from htmlgen import
 
 macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 4
-  var name= arg[0]
-  var value= arg[1]
-  var worst= arg[2]
-  var thresh= arg[3]
+  var 
+    name= arg[0]
+    value= arg[1]
+    worst= arg[2]
+    thresh= arg[3]
   result = quote do:
     "<tr>" &
     th(`name`) &
@@ -24,9 +25,10 @@ macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
 
 macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 3
-  var model_family= arg[0]
-  var model_name= arg[1]
-  var serial_number= arg[2]
+  var
+    model_family= arg[0]
+    model_name= arg[1]
+    serial_number= arg[2]
   result = quote do:
     "<thead>" &
     "<tr>" &

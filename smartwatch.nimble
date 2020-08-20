@@ -28,10 +28,23 @@ task configure, "Configure project.":
   exec "git submodule update --recursive --remote"
 task fbuild, "Build project.":
   exec "nimble makecfg"
-  exec "nim c --out:smartwatch src/smartwatch"
+  exec """nim c \
+            --define:git_rev=$(git log -1 --format="%H") \
+            --define:build_date="$(date +'%Y-%m-%dT%H:%M:%S%Z')" \
+            --out:smartwatch \
+            src/smartwatch
+       """
   exec "nimble clean"
 task dbuild, "Debug Build project.":
-  exec "nim c fakesmartctl.nim && nim c --define:debug_build=true --out:smartwatch --debuginfo:on src/smartwatch"
+  exec """nim c fakesmartctl.nim && \
+          nim c \
+            --define:git_rev=$(git log -1 --format="%H") \
+            --define:build_date="$(date +'%Y-%m-%dT%H:%M:%S%Z')" \
+            --define:debug_build=true \
+            --out:smartwatch \
+            --debuginfo:on \
+            src/smartwatch
+       """
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim tasks/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":

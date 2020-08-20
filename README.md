@@ -57,8 +57,8 @@ This project is currently in alpha state. Some basic functionality is missing or
 * Improve CSS/HTML frontend (see TODOs in source)
 * Add Settings in front-end (changing front-end colours, etc.)
 * Add Management in front-end (adding clients, etc.)
-* Add build date to About page
-* Add Git revision to About page
+* ~~Add build date to About page~~
+* ~~Add Git revision to About page~~
 * Aliasing devices in front-end
 * Set up binary releases
 * Set up CI
