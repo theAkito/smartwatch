@@ -92,7 +92,7 @@ router router:
          """<strong>License</strong>""" &
          br() &
          br() &
-         "Copyright (C) 2020  Akito <the@akito.ooo>" &
+         """Copyright (C) 2020  Akito <the@akito.ooo>""" &
          br() &
          br() &
          "This program is free software: you can redistribute it and/or modify" &
@@ -115,7 +115,7 @@ router router:
          br() &
          "You should have received a copy of the GNU General Public License" &
          br() &
-         "along with this program.  If not, see <https://www.gnu.org/licenses/>." &
+         """along with this program.  If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.""" &
          br() &
          br() &
          br() &
@@ -150,7 +150,12 @@ proc run() =
   getDeps()
   if debug_build == false:
     if not areSmartctlPermissionsGiven():
-      raise OS_PERMISSION_ERROR.newException("\nNot permitted to open devices.\nPlease run me as the `root` user.\n")
+      raise OS_PERMISSION_ERROR.newException(
+        """
+
+Not permitted to open devices.
+Please run me as the `root` user."""
+      )
   var
     port: Port
     dir: string

@@ -5,8 +5,6 @@ from tables import
   hasKey,
   pairs,
   `[]`
-from htmlgen import
-  th
 
 macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
   arg.expectLen 4
@@ -17,10 +15,18 @@ macro createSmartHtmlTableRow*(arg: varargs[untyped]): untyped =
     thresh= arg[3]
   result = quote do:
     "<tr>" &
-    th(`name`) &
-    th(`value`) &
-    th(`worst`) &
-    th(`thresh`) &
+    "<th>" &
+    `name` &
+    "</th>" &
+    "<th>" &
+    `value` &
+    "</th>" &
+    "<th>" &
+    `worst` &
+    "</th>" &
+    "<th>" &
+    `thresh` &
+    "</th>" &
     "</tr>"
 
 macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
@@ -32,10 +38,14 @@ macro createSmartHtmlTableTitleRow*(arg: varargs[untyped]): untyped =
   result = quote do:
     "<thead>" &
     "<tr>" &
-    th(`model_family` & " " & `model_name` & " " & `serial_number`) &
-    th("Value") &
-    th("Worst") &
-    th("Thresh") &
+    "<th>" &
+    `model_family` & " " &
+    `model_name` & " " &
+    `serial_number` &
+    "</th>" &
+    """<th>Value</th>""" &
+    """<th>Worst</th>""" &
+    """<th>Thresh</th>""" &
     "</tr>" &
     "</thead>"
 

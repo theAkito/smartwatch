@@ -7,7 +7,6 @@ body {
   font: 100%/1.1 'Arial', sans-serif;
   margin: 0;
   max-width: 510px;
-  /* min-width: 5000px; */
 }
 
 header {
@@ -65,7 +64,6 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
   table-layout: fixed;
-  /* width: calc(50% - 10px); */
   margin: 10px;
   margin-bottom: 25px;
   float: inherit;
